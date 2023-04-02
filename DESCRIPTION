@@ -1,0 +1,13 @@
+Package: gtaptools
+Type: Package
+Title: gtaptools
+Version: 0.1.0
+Authors@R: person("Thiago", "Simonato", email = "tsimonato@purdue.edu",
+                  role = c("aut", "cre"))
+Description: This package is an example R package.
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 3.1)
+Imports:
+    dplyr
