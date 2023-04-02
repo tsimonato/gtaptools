@@ -3,4 +3,3 @@ squeeze <- function(variables) {
   
 }
 
-utils::package.skeleton("squeeze")
