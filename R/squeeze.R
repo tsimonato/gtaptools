@@ -156,8 +156,8 @@ squeeze <-
         files = file.path(dirname(cmf_file), files))
   }
 
-# 
-# 
+
+
 # squeeze(cmf_file = "data/test/teste/termdyn_hou.cmf",
 #         zip_file = "novo.zip",
 #         add_files = "standard",
@@ -169,5 +169,8 @@ squeeze <-
 #         add_files = "standard",
 #         output = F)
 # 
-# 
+# gtaptools::squeeze(cmf_file = "data/test/teste/termdyn_hou.cmf",
+#                    zip_file = "novo.zip",
+#                    add_files = "standard",
+#                    output = F)
 
