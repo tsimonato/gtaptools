@@ -52,6 +52,6 @@ This is a basic usage example:
 
 library(gtaptools)
 ## basic example code
-squeeze(cmf_file = "data/test/teste/termdyn_hou.cmf",
-        zip_file = "new_sim.zip")
+squeeze_sim(cmf_file = "data/test/teste/termdyn_hou.cmf",
+            zip_file = "new_sim.zip")
 ```

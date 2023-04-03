@@ -1,4 +1,4 @@
-squeeze <-
+squeeze_sim <-
   function(cmf_file,
            zip_file,
            add_files = NULL,
@@ -6,7 +6,7 @@ squeeze <-
            bat = T) {
     
     #' @title Squeeze the simulation folder.
-    #' @name squeeze
+    #' @name squeeze_sim
     #' @description Squeeze the simulation folder by selecting only the essential files and putting them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc.
     #' @param cmf_file Path to .cmf file which manages the simulation.
     #' @param zip_file Name of the .zip file that will be created.
