@@ -5,6 +5,17 @@ squeeze <-
            output = F,
            bat = T) {
     
+    #' @title Squeeze the simulation folder.
+    #' @name squeeze
+    #' @description Squeeze the simulation folder by selecting only the essential files and putting them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc.
+    #' @param cmf_file Path to .cmf file which manages the simulation.
+    #' @param zip_file Name of the .zip file that will be created.
+    #' @param add_files Vector with the names or extensions of the files that will also be included in the .zip file in addition to the files mentioned in the description.
+    #' @param output Includes simulation output files (default = F).
+    #' @param bat Create a batch file to compile (if necessary) and run the simulation. (default = V). It is necessary to have Gempack installed.
+    #'
+    #' @export
+    
     zip_file <- sub("\\..*$", "", zip_file)
     
     cmf <- tolower(readChar(cmf_file, file.info(cmf_file)$size))
@@ -140,22 +151,23 @@ squeeze <-
       )
       files = c(files, paste0('RUN_', cmf_name, '.bat'))
     }
+    
     zip(file.path(dirname(cmf_file), paste0(zip_file, ".zip")),
         files = file.path(dirname(cmf_file), files))
   }
 
-
-
-squeeze(cmf_file = "data/test/teste/termdyn_hou.cmf",
-        zip_file = "novo.zip",
-        add_files = "standard",
-        output = F)
-
-
-squeeze(cmf_file = "data/test/gtapV7_condensed/UniEUSSA.cmf",
-        zip_file = "novo.zip",
-        add_files = "standard",
-        output = F)
-
-
+# 
+# 
+# squeeze(cmf_file = "data/test/teste/termdyn_hou.cmf",
+#         zip_file = "novo.zip",
+#         add_files = "standard",
+#         output = F)
+# 
+# 
+# squeeze(cmf_file = "data/test/gtapV7_condensed/UniEUSSA.cmf",
+#         zip_file = "novo.zip",
+#         add_files = "standard",
+#         output = F)
+# 
+# 
 
