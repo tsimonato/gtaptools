@@ -18,9 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The *gtaptools* package is a set of functions designed for supporting simulation exercises with CGE (Computable General Equilibrium) models in R language. 
-
-The primary goal of this package is to facilitate and improve file management, increase the analytical potential of the database, and provide graphical visualizations of simulation results.
+The *gtaptools* package is a set of functions designed for supporting simulation exercises with CGE (Computable General Equilibrium) models in R language. The primary goal of this package is to facilitate and improve file management, increase the analytical potential of the database, and provide graphical visualizations of simulation results.
 
 The package includes various functions to handle data management tasks, including data import/export, data manipulation, merging, subsetting, and cleaning. These functions are designed to streamline the data preparation process and ensure that data is in a suitable format for use in the CGE model. In addition to data management, the gtaptools package includes functions for conducting simulations and analyzing simulation results. 
 

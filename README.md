@@ -8,11 +8,9 @@
 
 The *gtaptools* package is a set of functions designed for supporting
 simulation exercises with CGE (Computable General Equilibrium) models in
-R language.
-
-The primary goal of this package is to facilitate and improve file
-management, increase the analytical potential of the database, and
-provide graphical visualizations of simulation results.
+R language. The primary goal of this package is to facilitate and
+improve file management, increase the analytical potential of the
+database, and provide graphical visualizations of simulation results.
 
 The package includes various functions to handle data management tasks,
 including data import/export, data manipulation, merging, subsetting,
