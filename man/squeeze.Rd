@@ -4,7 +4,7 @@
 \alias{squeeze}
 \title{Squeeze the simulation folder.}
 \usage{
-squeeze(cmf_file, zip_file, add_files, output = F, bat = T)
+squeeze(cmf_file, zip_file, add_files = NULL, output = F, bat = T)
 }
 \arguments{
 \item{cmf_file}{Path to .cmf file which manages the simulation.}

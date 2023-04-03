@@ -4,3 +4,4 @@
 .Ruserdata
 *.Rproj
 /data/test/**/*
+setup.R

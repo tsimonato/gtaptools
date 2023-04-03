@@ -1,7 +1,7 @@
 squeeze <-
   function(cmf_file,
            zip_file,
-           add_files,
+           add_files = NULL,
            output = F,
            bat = T) {
     
