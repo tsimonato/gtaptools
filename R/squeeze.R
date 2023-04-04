@@ -7,7 +7,7 @@ squeeze_sim <-
     
     #' @title Squeezing the simulation files into a .zip file.
     #' @name squeeze_sim
-    #' @description Scans the .cmf file and selects just essential files for the simulation and compresses them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc.
+    #' @description Scans the .cmf file and selects just essential files for the simulation and compresses them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc. (This function does not support dynamic simulations operationalized in the RunDynam software.)
     #' @param cmf_file Path to .cmf file which manages the simulation.
     #' @param zip_file Name of the .zip file that will be created.
     #' @param add_files Vector with the names or extensions of the files that will also be included in the .zip file in addition to the files mentioned in the description.
