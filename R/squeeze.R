@@ -86,6 +86,7 @@ squeeze_sim <-
     cmf_name <- sub("\\..*$", "", basename(cmf_file))
     files <- lapply(files, function(x) gsub("<cmf>", cmf_name, x))
     files <- unlist(files)
+    files <- gsub("\\\\", "/", files)
     files <- files_list[grepl(paste0(
       "\\w*(",
       paste(c(files), collapse = "|"),
