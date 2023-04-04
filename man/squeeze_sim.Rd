@@ -2,7 +2,7 @@
 % Please edit documentation in R/squeeze.R
 \name{squeeze_sim}
 \alias{squeeze_sim}
-\title{Squeezing the simulation files into a .zip file.}
+\title{Squeeze the simulation files into a .zip file.}
 \usage{
 squeeze_sim(cmf_file, zip_file, add_files = NULL, output = F, bat = T)
 }
