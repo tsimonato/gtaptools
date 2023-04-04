@@ -43,10 +43,14 @@ squeeze_sim <-
     get_paths <- function(ext) {
       files <- c()
       for (l in 1:length(cmf)) {
-        if (grepl("(file|shock)\\s", cmf[l])) {
+        if (grepl("(file |shock ).*=.*", cmf[l])) {
           path <- unlist(strsplit(cmf[l], '\"| |;'))
           ext <- paste(paste(ext, sep = "|"), collapse = "|")
           path <- path[grepl(paste0("\\w*(", ext, ")\\b"), tolower(path))]
+          files <- c(files, path)
+        } else if (grepl("(solution file).*=.*", cmf[l])) {
+          path <- unlist(strsplit(cmf[l], '\"| |;'))
+          path <- tail(path[path!=""], n=1)
           files <- c(files, path)
         }
       }
@@ -54,21 +58,30 @@ squeeze_sim <-
     }
     
     input <- get_paths(input_ext)
-    out <- get_paths(output_ext)
-    files_list <- tolower(list.files(dirname(cmf_file)))
+    out <- get_paths(c(output_ext, "/"))
+    files_list <- tolower(list.files(dirname(cmf_file), recursive = T))
     main <- files_list[grepl(paste0(
       "\\w*(",
       paste(c(main_ext,add_files), collapse = "|"),
       ")\\b"
     ),
     files_list)]
+    folder_solutions = grep(".*\\..*", files, value = TRUE, invert = T)
+    solutions <- files_list[grepl(paste0(
+      "\\w*(",
+      paste(folder_solutions, collapse = "|"),
+      ")\\b"
+    ),
+    files_list)]
     
     if (output) {
-      files <- c(input, out, main)
+      files <- c(input, out, solutions, main)
     } else {
-      files <- c(input, main)
+      writeLines("Just a temp file used while building the zip file. It can be deleted without problems.", 
+                 file.path(dirname(cmf_file), dirname(folder_out), "temp.txt"))
+      files <- c(input, file.path(dirname(folder_out), "temp.txt"), main)
     }
-    
+
     cmf_name <- sub("\\..*$", "", basename(cmf_file))
     files <- lapply(files, function(x) gsub("<cmf>", cmf_name, x))
     files <- unlist(files)
@@ -95,22 +108,22 @@ squeeze_sim <-
         paste0(
       '
       echo on
-      REM this BAT runs TABLO and LTG for ', aux, '.TAB only IF NECESSARY 
+      REM this BAT runs TABLO and LTG for termdyn_hou.TAB only IF NECESSARY 
       REM helper programs LATER.EXE and SETERR.EXE are used
       REM Check if EXE, AXS and AXT are later than TAB and STI; if so, skip
-      LATER ', aux, '.tab ', aux, '.sti / ', aux, '.exe ', aux, '.axt ', aux, '.axs
+      LATER termdyn_hou.tab termdyn_hou.sti / termdyn_hou.exe termdyn_hou.axt termdyn_hou.axs
       if errorlevel 1 goto skip
       REM One of TAB or STI is later than EXE, AXS and AXT, so rerun TABLO and LTG
-      del ', aux, '.ax?
-      del ', aux, '.for
-      del ', aux, '.exe
+      del termdyn_hou.ax?
+      del termdyn_hou.for
+      del termdyn_hou.exe
       echo on
-      tablo<', aux, '.sti  >tb', aux, '.log
+      tablo<termdyn_hou.sti  >tbtermdyn_hou.log
       if errorlevel 1 goto error
-      call ltg ', aux, '
+      call ltg termdyn_hou
       if errorlevel 1 goto error
-      dir ', aux, '.exe
-      echo SUCCESSFULLY COMPILED ', aux, '
+      dir termdyn_hou.exe
+      echo SUCCESSFULLY COMPILED termdyn_hou
       echo off
       REM clean up junk files
       del *.for
@@ -121,22 +134,25 @@ squeeze_sim <-
       del opt90
       del opt95
       seterr 0
-      goto endbat
+      goto simulation
       :error
       echo off
-      echo ###### ERROR: FAILED TO COMPILE ', aux, ' #####
+      echo ###### ERROR: FAILED TO COMPILE termdyn_hou #####
       echo Check log file below
-      dir tb', aux, '.log
-      dir ', aux, '.inf
+      dir tbtermdyn_hou.log
+      dir termdyn_hou.inf
       echo Please press CTRL-C to terminate batch job
       pause
-      goto endbat
       :skip
       seterr 0
       echo off
-      echo COMPILE IS NOT NEEDED: ', aux, '.exe is later than ', aux, '.TAB
-      dir/od ', aux, '.*
-      ', aux, ' -cmf ', cmf_name, '.cmf
+      echo COMPILE IS NOT NEEDED: termdyn_hou.exe is later than termdyn_hou.TAB
+
+
+      :simulation
+      dir/od termdyn_hou.*
+      echo on
+      termdyn_hou -cmf termdyn_hou.cmf
       if errorlevel 1 goto error
       dir/od *.har
       echo BATCH JOB SUCCESSFUL
@@ -151,15 +167,15 @@ squeeze_sim <-
       echo Please press CTRL-C to terminate batch job
       pause > nul
       goto again
-      :endbat
-      :endbat
-      echo on'),
+      :endbat'),
       file.path(dirname(cmf_file), paste0('RUN_', cmf_name, '.bat'))
       )
       files = c(files, paste0('RUN_', cmf_name, '.bat'))
     }
     
-    zip(file.path(dirname(cmf_file), paste0(zip_file, ".zip")),
+    new_zip <- file.path(dirname(cmf_file), paste0(zip_file, ".zip"))
+    unlink(new_zip)
+    zip(new_zip,
         files = file.path(dirname(cmf_file), files))
   }
 
