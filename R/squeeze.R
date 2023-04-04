@@ -24,19 +24,19 @@ squeeze_sim <-
     
     cmf <- unlist(strsplit(cmf, "\\r\\n"))
     
-    main_ext <- c("tab",
-                  "cmf",
-                  "sti",
-                  "bat")
+    main_ext <- c(".tab",
+                  ".cmf",
+                  ".sti",
+                  ".bat")
     
-    input_ext <- c("har",
-                   "prm",
-                   "shk",
-                   "cls")
+    input_ext <- c(".har",
+                   ".prm",
+                   ".shk",
+                   ".cls")
     
-    output_ext <- c("sl4",
-                    "upd",
-                    "slc")
+    output_ext <- c(".sl4",
+                    ".upd",
+                    ".slc")
     
     # ext <- paste(paste(main_ext, input_ext, out_ext, sep = '|'), collapse = '|')
     
@@ -46,7 +46,7 @@ squeeze_sim <-
         if (grepl("(file|shock)\\s", cmf[l])) {
           path <- unlist(strsplit(cmf[l], '\"| |;'))
           ext <- paste(paste(ext, sep = "|"), collapse = "|")
-          path <- path[grepl(paste0("\\w*\\.(", ext, ")\\b"), tolower(path))]
+          path <- path[grepl(paste0("\\w*(", ext, ")\\b"), tolower(path))]
           files <- c(files, path)
         }
       }
@@ -57,11 +57,9 @@ squeeze_sim <-
     out <- get_paths(output_ext)
     files_list <- tolower(list.files(dirname(cmf_file)))
     main <- files_list[grepl(paste0(
-      "\\w*\\.(",
-      paste(main_ext, collapse = "|"),
-      ")\\b|.*",
-      add_files,
-      ".*"
+      "\\w*(",
+      paste(c(main_ext,add_files), collapse = "|"),
+      ")\\b"
     ),
     files_list)]
     
@@ -76,18 +74,27 @@ squeeze_sim <-
     files <- unlist(files)
     
     if (bat) {
-
       aux <- cmf[grepl(paste0("(aux |auxiliary ).*files.*=.*"), tolower(cmf))]
       aux <- unlist(strsplit(aux, '\"| |;'))
       aux <- tail(aux[aux!=""],n=1)
       
-      if (is.null(aux)){
+      if (is.null(aux) | !(paste0(aux, ".tab") %in% files)){
         aux = cmf_name
+        
+      } else if (!(paste0(cmf_name, ".tab") %in% files)){
+        aux = files[grepl(paste0(
+          "\\w*(",
+          ".tab",
+          ")\\b"
+        ),
+        files)]
+        aux = basename(aux[1])
       }
       
       writeLines(
         paste0(
-          'echo on
+      '
+      echo on
       REM this BAT runs TABLO and LTG for ', aux, '.TAB only IF NECESSARY 
       REM helper programs LATER.EXE and SETERR.EXE are used
       REM Check if EXE, AXS and AXT are later than TAB and STI; if so, skip
