@@ -5,14 +5,14 @@ squeeze_sim <-
            output = F,
            bat = T) {
     
-    #' @title Squeeze the simulation folder.
+    #' @title Squeezing the simulation files into a .zip file.
     #' @name squeeze_sim
-    #' @description Squeeze the simulation folder by selecting only the essential files and putting them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc.
+    #' @description Scans the .cmf file and selects just essential files for the simulation and compresses them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc.
     #' @param cmf_file Path to .cmf file which manages the simulation.
     #' @param zip_file Name of the .zip file that will be created.
     #' @param add_files Vector with the names or extensions of the files that will also be included in the .zip file in addition to the files mentioned in the description.
     #' @param output Includes simulation output files (default = F).
-    #' @param bat Create a batch file to compile (if necessary) and run the simulation. (default = V). It is necessary to have Gempack installed.
+    #' @param bat Create a batch file to compile (if necessary) and run the simulation. (default = T). For this functionality it is necessary to have Gempack installed.
     #'
     #' @export
     

@@ -2,7 +2,7 @@
 % Please edit documentation in R/squeeze.R
 \name{squeeze_sim}
 \alias{squeeze_sim}
-\title{Squeeze the simulation folder.}
+\title{Squeezing the simulation files into a .zip file.}
 \usage{
 squeeze_sim(cmf_file, zip_file, add_files = NULL, output = F, bat = T)
 }
@@ -15,8 +15,8 @@ squeeze_sim(cmf_file, zip_file, add_files = NULL, output = F, bat = T)
 
 \item{output}{Includes simulation output files (default = F).}
 
-\item{bat}{Create a batch file to compile (if necessary) and run the simulation. (default = V). It is necessary to have Gempack installed.}
+\item{bat}{Create a batch file to compile (if necessary) and run the simulation. (default = T). For this functionality it is necessary to have Gempack installed.}
 }
 \description{
-Squeeze the simulation folder by selecting only the essential files and putting them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc.
+Scans the .cmf file and selects just essential files for the simulation and compresses them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc.
 }
