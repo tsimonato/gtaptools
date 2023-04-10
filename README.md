@@ -55,3 +55,8 @@ library(gtaptools)
 squeeze_sim(cmf_file = "data/test/teste/termdyn_hou.cmf",
             zip_file = "new_sim.zip")
 ```
+
+## References
+
+M. Ivanic, HARr, (2020), GitHub repository:
+<https://github.com/USDA-ERS/MTED-HARr>

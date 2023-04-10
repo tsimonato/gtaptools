@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Simonao
+    given-names: Thiago
+    orcid: https://orcid.org/0000-0002-0238-7312
+title: "My Research Software"
+version: 0.1.0
+date-released: 2023-01-04

@@ -15,8 +15,8 @@ squeeze_sim(cmf_file, zip_file, add_files = NULL, output = F, bat = T)
 
 \item{output}{Includes simulation output files (default = F).}
 
-\item{bat}{Create a batch file to compile (if necessary) and run the simulation. (default = T). For this functionality it is necessary to have Gempack installed.}
+\item{bat}{Create a batch file to compile (if necessary) and run the simulation (default = T). For this functionality it is necessary to have Gempack installed.}
 }
 \description{
-Scans the .cmf file and selects just essential files for the simulation and compresses them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later.The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc. (This function does not support dynamic simulations operationalized in the RunDynam software.)
+Scans the .cmf file and selects just essential files for the simulation and compresses them in a .zip file. It also creates a .bat file that makes it easy to run the simulation later. The files that are included are those specified in the .cmf file and that have the extension .tab, .cmf, .sti, .bat, .har, .prm, .shk, .cls, and in the case output = F, .sl4, .upd, .slc. (This function does not support dynamic simulations operationalized in the RunDynam software.)
 }
