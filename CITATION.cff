@@ -1,0 +1,26 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: gtaptools
+message: >-
+  Thank you for using gtaptools. Feel free to contribute
+  with improvements and reporting bugs. If you use this
+  package, please cite it using the metadata from this file.
+type: software
+authors:
+  - given-names: Thiago
+    family-names: Simonato
+    email: tsimonat@purdue.edu
+    affiliation: Postdoctoral research associate at Purdue University
+    orcid: 'https://orcid.org/0000-0002-0238-7312'
+repository-code: 'https://github.com/tsimonato/gtaptools'
+url: 'https://tsimonato.github.io/gtaptools/'
+abstract: >-
+  A set of tools to improve the productivity of CGE
+  modelers.
+keywords:
+  - 'CGE, GTAP, Gempack.'
+license: MIT
+version: 0.1.0
+date-released: '2023-04-01'
