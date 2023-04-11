@@ -6,11 +6,6 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-    <style>
-    body {
-    text-align: justify}
-    </style>
-
 The *gtaptools* is a package <u>under development</u> that aims to offer
 a set of functions designed for supporting simulation exercises with CGE
 (Computable General Equilibrium) models in R language. The primary goal
