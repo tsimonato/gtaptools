@@ -79,6 +79,7 @@ squeeze_sim <-
     
     if (output) {
       files <- c(input, out, main)
+      message("The simulation output files will be included in the .zip file.")
     } else {
       files <- c(input, main)
     }
@@ -185,10 +186,14 @@ squeeze_sim <-
       file.path(dirname(cmf_file), paste0('run_', cmf_name, '.bat'))
       )
       files = unique(c(files, paste0('run_', cmf_name, '.bat')))
+      message(paste0("The file ", paste0('run_', cmf_name, '.bat'), " was created. You can run it later to compile the model and run the simulation if you have Gempack software installed on your machine."))
     }
     
     new_zip <- file.path(dirname(cmf_file), paste0(zip_file, ".zip"))
     unlink(new_zip)
     zip(new_zip,
         files = file.path(dirname(cmf_file), files))
+    
+    message(paste0("The simulation files have been squeezed to ", paste0(zip_file, ".zip")))
+    
   }
