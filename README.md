@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 <!-- badges: end -->
+<p align="justify">
 
 The *gtaptools* is a package **under development** that aims to offer a
 set of functions designed for supporting simulation exercises with CGE
@@ -36,6 +37,8 @@ CGE models and have access to libraries available in the R language
 universe. Its focus on file management, data analysis, and graphical
 visualization makes it a powerful tool for building automated pipelines,
 reducing the chance of human errors, and increasing productivity.
+
+</p>
 
 ## Installation
 
