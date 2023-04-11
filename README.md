@@ -13,7 +13,7 @@ of this package is to facilitate and improve file management, increase
 the analytical potential of the database, and provide graphical
 visualizations of simulation results. The manual with the description of
 the functions can be found
-[here](https://github.com/tsimonato/gtaptools/manual/)
+[here](https://github.com/tsimonato/gtaptools/docs/manual/).
 
 The package includes various functions to handle data management tasks,
 including data import/export, data manipulation, merging, sub-setting,
