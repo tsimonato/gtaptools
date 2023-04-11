@@ -5,3 +5,4 @@
 *.Rproj
 /data/test/**/*
 setup.R
+anotations.txt
