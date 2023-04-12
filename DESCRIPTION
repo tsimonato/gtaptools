@@ -11,5 +11,7 @@ Depends:
     R (>= 3.1)
 Imports:
     dplyr
+Remotes:
+    github::USDA-ERS/MTED-HARr
 RoxygenNote: 7.2.3
 License: GPL (>= 3)
