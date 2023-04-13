@@ -8,8 +8,6 @@ agg_har(
   input_data,
   model = NULL,
   correspondences,
-  var,
-  var_weight = NULL,
   fun = sum,
   output_har_file = NULL
 )
@@ -20,10 +18,6 @@ agg_har(
 \item{model}{Indicates the CGE model being worked on (Supports only GTAP, ....).}
 
 \item{correspondences}{A list indicating the original sets and new aggregated sets that will be exported. It can indicate a path to a .csv file or an existing object in the R environment that has the correspondences between the *input_data* sets and the new aggregated sets. The first line will be considered as header and identifier, and must necessarily contain the same name as the set that must be aggregated from *input_data*.}
-
-\item{var}{A list object (see example section) with variables names that will be aggregated. If not specified, all variables containing the sets indicated in *sets_to_agg* will be aggregated.}
-
-\item{var_weight}{A list object that relates the name of the aggregated variables (*var*) with the name of their respective weights, if any. An aggregation without weights will be performed if the weight variable is not found in the input data (*input_data*).}
 
 \item{fun}{Function that will be applied to aggregate (default = sum).}
 
