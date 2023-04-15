@@ -1,0 +1,506 @@
+har_shape <- function(input_data,
+                      new_calculated_vars = NULL,
+                      del_var = NULL,
+                      output_har_file = NULL) {
+  #' @name har_shape
+  #' @title Aggregates headers of data in .har structure.
+  #'
+  #' @description It aggregates variables from a .har file on disk or an object with the structure exported by the read_har function. It is possible to adopt customized weights and functions to calculate aggregations. The specification of GTAP models (...) through the *model* parameter is supported so that the respective weight variables are automatically detected according to the model being analyzed.
+  #'
+  #' @param input_data It can indicate a path to a .har file or an existing object in the R environment that has the output structure of the read_har function.
+  #' @param new_calculated_vars XXXX
+  #' @param del_var XXXX
+  #' @param output_har_file Output .har file name.
+  #'
+  #' @import dplyr
+  #'
+  #'
+  #' @export
+
+
+
+  # new_var=NULL
+  # input_data_text <- "data/test/teste/input/REG_DYN_HOU.har"
+  # input_data <- HARr::read_har(input_data_text,
+  #                              useCoefficientsAsNames = F,
+  #                              toLowerCase = F
+  # )
+  #
+  # input_data2 <- input_data1$MAKE |> as.data.frame.table()
+  # input_data3 <- input_data1$BSMR |> as.data.frame.table()
+  # input_data4 <- input_data1$HOU
+  #
+  #
+  #
+  #
+  #
+  # new_calculated_vars <- list(
+  #   list(
+  #     x = "MAKE",
+  #     y = "1CAP",
+  #     z = "TFRO",
+  #     fun = function(x,y,z) sum(x + y +z),
+  #     new_header = "XXXX",
+  #     new_dim_cols = c("COM", "IND", "DST")
+  #   ),
+  #   list(
+  #     x = "BSMR",
+  #     fun = function(x) log(x),
+  #     new_header = "YYYY",
+  #     new_dim_cols = c("COM")
+  #   ),
+  #   list(
+  #     x = "BSMR",
+  #     fun = function(x) sum(x),
+  #     new_header = "MAK4",
+  #     new_dim_cols = c("COM", "SRC")
+  #   )
+  # )
+  #
+  #
+  # input_data <- list(
+  #   input_data1,
+  #   list(
+  #     data = input_data2,
+  #     dim_cols = c("COM", "IND", "DST"),
+  #     values = "Freq",
+  #     name_header = "MAKE"
+  #   ),
+  #   list(
+  #     data = input_data3,
+  #     dim_cols = c("COM", "SRC", "USR", "DST"),
+  #     values = "Freq",
+  #     name_header = "MAKE2"
+  #   ),
+  #   list(
+  #     data = input_data4,
+  #     name_header = "HOU"
+  #   )
+  # )
+  #
+
+
+
+  # new_derived_vars <- list(
+  #   list(
+  #     input_header = "MAKE",
+  #     new_header = "MAK4",
+  #     new_header_dim = c("COM", "IND")
+  #   ),
+  #   list(
+  #     input_header = "BSMR" ,
+  #     new_header = "BSM2",
+  #     new_header_dim = "COM"
+  #   )
+  # )
+
+
+
+
+
+  input <- c()
+  input_har <- c()
+  for (l in 1:length(input_data)) {
+    input <- input_data[[l]]
+
+    if (!is.null(input$data)) {
+      if (!is.character(input$data)) {
+        input$data <- input$data[c(input$dim_cols, input$values)]
+        input$data[[input$values]] <- as.numeric(input$data[[input$values]])
+        input$data <- data.table::as.data.table(input$data)
+        input$data <- input$data[, lapply(.SD, base::sum, na.rm = T), by = c(input$dim_cols)]
+        input$data <- as.data.frame(input$data)
+
+        dim_info <- input$data[input$dim_cols]
+        dim <- sapply(dim_info, function(x) length(unique(x)))
+        dimnam <- sapply(dim_info, function(x) unique(x))
+        if (!is.list(dimnam)) {
+          dimnam <- as.list(as.data.frame(dimnam))
+        }
+
+        input <- array(
+          data = input$data[[input$values]],
+          dim = dim,
+          dimnames = dimnam
+        )
+        input_har[[input_data[[l]]$name_header]] <- input
+      } else {
+        input_har[[input_data[[l]]$name_header]] <- as.character(input$data)
+      }
+    } else {
+      input_har <- c(input, input_har, input)
+    }
+  }
+
+
+
+
+  if (!is.null(new_calculated_vars)) {
+    for (l in 1:length(new_calculated_vars)) {
+      new_c <- new_calculated_vars[[l]]
+
+
+      vars_fun <- !names(new_c) %in% c("fun", "new_header", "new_dim_cols")
+      vars_fun <- unlist(new_c[vars_fun])
+
+      v <- 3
+      new_h <- c()
+      for (v in 1:length(vars_fun)) {
+        new_h[[v]] <- as.data.frame.table(input_har[[vars_fun[v]]])
+        new_h[[v]][vars_fun[v]] <- new_h[[v]]$Freq
+        new_h[[v]]$Freq <- NULL
+
+        if (v == 1) {
+          new_h_merged <- new_h[[v]]
+        } else {
+          new_h_merged <- dplyr::full_join(new_h_merged, new_h[[v]], relationship = "many-to-many")
+        }
+      }
+
+      new_header <- new_h_merged |>
+        dplyr::group_by(dplyr::across(new_c$new_dim_cols)) |>
+        dplyr::summarise(Freq = do.call(new_c$fun, rlang::syms(vars_fun))) |>
+        as.data.frame()
+
+      dim_info <- new_header |>
+        dplyr::select(dplyr::any_of(new_c$new_dim_cols))
+      dim <- sapply(dim_info, function(x) length(unique(x)))
+      dimnam <- sapply(dim_info, function(x) unique(x))
+      if (!is.list(dimnam)) {
+        dimnam <- as.list(as.data.frame(dimnam))
+      }
+
+      new_header <- array(
+        data = new_header$Freq,
+        dim = dim,
+        dimnames = dimnam
+      )
+
+      input_har[[new_c$new_header]] <- new_header
+    }
+  }
+}
+  
+  
+  
+  # if (!is.null(new_derived_vars)) {
+  #   for (l in 1:length(new_derived_vars)) {
+  #     new_d <- new_derived_vars[[l]]
+  # 
+  #     new_h <- as.data.frame.table(input_har[[new_d$input_header]])
+  #     new_h <- new_h[c(new_d$new_header_dim, "Freq")]
+  #     new_h <- data.table::as.data.table(new_h)
+  #     new_h <- new_h[, lapply(.SD, base::sum, na.rm = T), by = c(new_d$new_header_dim)]
+  #     new_h <- as.data.frame(new_h)
+  # 
+  #     dim_info <- new_h[new_d$new_header_dim]
+  #     dim <- sapply(dim_info, function(x) length(unique(x)))
+  #     dimnam <- sapply(dim_info, function(x) unique(x))
+  #     if (!is.list(dimnam)) {
+  #       dimnam <- as.list(as.data.frame(dimnam))
+  #     }
+  # 
+  #     new_h <- array(
+  #       data = new_h$Freq,
+  #       dim = dim,
+  #       dimnames = dimnam
+  #     )
+  # 
+  #     input_har[[new_d$new_header]] <- new_h
+  #   }
+  # }
+
+      
+      
+      
+  #     
+  #     
+  #     
+  #     
+  #     
+  #     
+  #     
+  #     
+  #     a <- function(x,y,z) sum(x + y - x + z)
+  #     
+  #     new_c$fun(MAKE, MAK4, TFRO)
+  #     
+  #     
+  #     fun(new_c$x, new_c$y, new_c$z)
+  #     
+  #     input_har[[vars_fun[v]]]
+  #     
+  #     a <- dplyr::full_join( as.data.frame.table(input_har$MAKE), as.data.frame.table(input_har$MAK4))
+  #     b <- 
+  #       dplyr::full_join( a, as.data.frame.table(input_har$TFRO))
+  #       
+  #     
+  #     
+  #     
+  #     COM IND DST
+  #     1168022
+  #     
+  #       
+  #       new_h[[v+1]] <- data.table::as.data.table(new_h[[v+1]]) 
+  #       new_h[["merged"]] = merge(new_h, new_h[[v]])
+  #       new_h[["merged"]] = data.table::merge.data.table(new_h[v-1], new_h[[v]])
+  #       new_h[["merged"]] = dplyr::full_join(new_h[[v]], new_h[[v+1]])
+  #       
+  #       
+  #     }
+  #     
+  #     
+  #     class(new_h[[v+1]])
+  #     
+  #     
+  #     new_h <- as.data.frame.table(input_har[[new_d$input_header]])
+  #     new_h <- new_h[c(new_d$new_header_dim, "Freq")]
+  #     new_h <- data.table::as.data.table(new_h)
+  #     new_h <- new_h[, lapply(.SD, base::sum, na.rm = T), by = c(new_d$new_header_dim)]
+  #     new_h <- as.data.frame(new_h)
+  #     
+  #     dim_info <- new_h[new_d$new_header_dim]
+  #     dim <- sapply(dim_info, function(x) length(unique(x)))
+  #     dimnam <- sapply(dim_info, function(x) unique(x))
+  #     if (!is.list(dimnam)) {
+  #       dimnam <- as.list(as.data.frame(dimnam))
+  #     }
+  #     
+  #     new_h <- array(
+  #       data = new_h$Freq,
+  #       dim = dim,
+  #       dimnames = dimnam
+  #     )
+  #     
+  #     input_har[[new_d$new_header]] <- new_h
+  #   }
+  # }
+  #   
+  #   
+  #   
+  # }
+  # 
+  # 
+  # }
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # se tiver mais do q x, merge em todas com loop all
+  # faz o calculo sumarizando nas dimensoes de saida
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # 
+  # input_data$
+  # 
+  # 
+  # 
+  # usethis::use_r("create_header.R")
+  # 
+  # 
+  # var_custom_agg = list(SLAB = weighted.mean())
+  # 
+  # 
+  # 
+  # fun = weighted.mean(w = `1LAB`[c("OCC","DST")])
+  # 
+  # fun = function(x, fun, ...) fun(x, ...)
+  # 
+  # fun(x= c(2,3,NA), fun = weighted.mean, w=(c(1,4,5)), na.rm=T)
+  # 
+  # 
+  # 
+  # 
+  # d = list(XX = DDD+FFF)
+  # 
+  # 
+  # lapply(list, function)
+  # 
+  # function (X, FUN, ...) 
+  # {
+  #   FUN <- match.fun(FUN)
+  #   
+  #   fun <- sum
+  #   input_data_text <- "data/test/teste/input/REG_DYN_HOU.har"
+  #   input_data_text2 <- "data/test/teste/output/b37b-r37r-p37p-2021oct.sl4"
+  #   correspondences <- list(
+  #     list(
+  #       state = c("DST", "ORG", "PRD"),
+  #       input = "inst\\extdata\\example_corresp.csv",
+  #       sep = ";"
+  #     ),
+  #     list(
+  #       sec_new = c("IND", "COM"),
+  #       input = "inst\\extdata\\example_corresp.csv",
+  #       sep = ";"
+  #     ),
+  #     list(
+  #       usr_new = "USR",
+  #       input = "inst\\extdata\\example_corresp.csv",
+  #       sep = ";"
+  #     )
+  #   )
+  #   
+  #   var_custom_agg <- list(
+  #     list(
+  #       var = c("DST", "ORG", "PRD"),
+  #       weight = "inst\\extdata\\example_corresp.csv",
+  #       fun = weighted.mean()
+  #     ),
+  #     list(
+  #       sec_new = c("IND", "COM"),
+  #       input = "inst\\extdata\\example_corresp.csv",
+  #       sep = ";"
+  #     ),
+  #     list(
+  #       usr_new = "USR",
+  #       input = "inst\\extdata\\example_corresp.csv",
+  #       sep = ";"
+  #     )
+  #   )
+  #   
+  #   
+  #   "inst\\extdata\\example_corresp.csv"
+  #   
+  #   
+  #   
+  #   #  reading input .har file if input_data is a path
+  #   if (is.character(input_data_text)) {
+  #     input_data <- HARr::read_har(input_data_text,
+  #                                  useCoefficientsAsNames = F,
+  #                                  toLowerCase = F
+  #     )
+  #     
+  #     
+  #     # c <- 1
+  #     # loop em cada lista de correspondencia
+  #     agg_csv <- c()
+  #     for (c in 1:length(correspondences)) {
+  #       corr <- correspondences[[c]]
+  #       # Read correspondences if it is a csv file
+  #       if (is.character(corr$input)) {
+  #         corr$input <- read.csv(corr$input,
+  #                                sep = ifelse(!is.null(corr$sep),
+  #                                             corr$sep,
+  #                                             ","
+  #                                )
+  #         )
+  #       }
+  #       set_agg <- names(corr)[!names(corr) %in% c("input", "sep")]
+  #       set_agg_csv <- c(set_agg, corr[set_agg][[1]])
+  #       agg_csv[[c]] <- as.data.frame(unique(corr$input[set_agg_csv]))
+  #       agg_csv[[c]]["number"] <- row.names(agg_csv[[c]])
+  #       # h <- 18
+  #       # loop em cada header
+  #       for (h in 1:length(input_data)) {
+  #         if (is.array(input_data[[h]])) {
+  #           header <- as.data.frame.table(input_data[[h]])
+  #           # header2 <- input_data[[h]]
+  #           # header2 = input_data[[h]]
+  #           # set_agg <- names(corr)[!names(corr) %in% c("input", "sep")]
+  #           test <- corr[[set_agg]] %in% names(header)
+  #           # test <- corr[[set_agg]] %in% names(dimnames(header2))
+  #           # testa se o header tem alguma variavel para ser agregada
+  #           if (any(test)) {
+  #             col_names <- c(set_agg, corr[[set_agg]][test])
+  #             corr_to_merge <- unique(corr$input[col_names])
+  #             corr_to_merge[corr_to_merge == ""] <- NA
+  #             corr_to_merge <- na.omit(corr_to_merge)
+  #             # header_agg <- header
+  #             col <- 2
+  #             for (col in 2:length(corr_to_merge)) {
+  #               cols_agg <- c(col_names[1], col_names[col])
+  #               header <- data.table::as.data.table(header)
+  #               header <- data.table::merge.data.table(header,
+  #                                                      unique(corr_to_merge[cols_agg]),
+  #                                                      by = names(corr_to_merge[col])
+  #               )
+  #               header <- as.data.frame(header)
+  #               header[col_names[col]] <-
+  #                 as.factor(header[cols_agg[1]][[1]])
+  #               header[cols_agg[1]] <- NULL
+  #               # header2 <-
+  #               #   aggregate(Freq ~ ., data = header, FUN = fun)
+  #               
+  #               # cols_group = names(header[,names(header)!="Freq"])
+  #               cols_group <- as.data.frame.table(input_data[[h]])
+  #               cols_group$Freq <- NULL
+  #               cols_group <- names(cols_group)
+  #               header <- data.table::as.data.table(header)
+  #               header <- header[, lapply(.SD, fun, na.rm = T), by = cols_group]
+  #               header <- as.data.frame(header)
+  #             }
+  #             
+  #             cols_dim_array <- header
+  #             cols_dim_array$Freq <- NULL
+  #             dim <- sapply(cols_dim_array, function(x) length(unique(x)))
+  #             dimnam <- sapply(cols_dim_array, function(x) unique(x))
+  #             if (!is.list(dimnam)) {
+  #               dimnam <- as.list(as.data.frame(dimnam))
+  #             }
+  #             
+  #             header <- array(
+  #               data = header$Freq,
+  #               dim = dim,
+  #               dimnames = dimnam
+  #             )
+  #             #
+  #             # header4 = array(data = header$Freq,
+  #             #                 dim = c(126, 27),
+  #             #                 dimnames = list(
+  #             #                   IND = unique(header$IND),
+  #             #                   DST = unique(header$DST)
+  #             #                 ))
+  #             
+  #             # class(dimnames)
+  #             
+  #             input_data[[h]] <- header
+  #           }
+  #         } else if (is.character(input_data[[h]])) {
+  #           set_orig <- corr[!names(corr) %in% c("input", "sep")][[1]]
+  #           set_char <- names(input_data[h])
+  #           test <- set_orig %in% names(input_data[h])
+  #           if (any(test)) {
+  #             set_new <- names(corr[!names(corr) %in% c("input", "sep")])
+  #             elem_new <- unique(corr$input[set_new])
+  #             elem_new[elem_new == ""] <- NA
+  #             elem_new <- na.omit(elem_new)
+  #             input_data[[h]] <- elem_new[[1]]
+  #           }
+  #         }
+  #       }
+  #     }
+  #     
+  #     agg_csv_df <- c()
+  #     agg_csv_df$number <- 0
+  #     for (l in agg_csv) {
+  #       l$number <- as.numeric(l$number)
+  #       agg_csv_df <- merge(agg_csv_df, l, by = "number", all = T, sort = T)
+  #       agg_csv_df[agg_csv_df == "NA"] <- ""
+  #     }
+  #     write.csv2(agg_csv_df, file = "gtaptools_agg_har_correspondences.csv")
+  #     
+  #     if (!is.null(output_har_file)) {
+  #       HARr::write_har(input_data, filename = output_har_file)
+  #     }
+  #     
+  #     return(input_data)
+  #   }
+  # }
+  # 
+  # 
+  # 

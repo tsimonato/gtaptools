@@ -52,11 +52,12 @@ devtools::install_github("tsimonato/gtaptools")
 This is a basic usage example:
 
 ``` r
-
 library(gtaptools)
 ## basic example code
 squeeze_sim(cmf_file = "data/test/teste/termdyn_hou.cmf",
             zip_file = "new_sim.zip")
+#> The file run_termdyn_hou.bat was created. You can run it later to compile the model and run the simulation if you have Gempack software installed on your machine.
+#> The simulation files have been squeezed to new_sim.zip
 ```
 
 ## References

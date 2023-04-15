@@ -1,6 +1,7 @@
 agg_har <- function(input_data,
                     model = NULL,
                     correspondences,
+                    var_custom_agg,
                     fun = sum,
                     output_har_file = NULL) {
   #' @name agg_har
@@ -19,31 +20,48 @@ agg_har <- function(input_data,
   #'
   #' @export
 
-
-
-  # fun <- sum
-  # input_data_text <- "data/test/teste/input/REG_DYN_HOU.har"
-  # input_data_text2 <- "data/test/teste/output/b37b-r37r-p37p-2021oct.sl4"
-  # correspondences <- list(
-  #   list(
-  #     state = c("DST", "ORG", "PRD"),
-  #     input = "inst\\extdata\\example_corresp.csv",
-  #     sep = ";"
-  #   ),
-  #   list(
-  #     sec_new = c("IND", "COM"),
-  #     input = "inst\\extdata\\example_corresp.csv",
-  #     sep = ";"
-  #   ),
-  #   list(
-  #     usr_new = "USR",
-  #     input = "inst\\extdata\\example_corresp.csv",
-  #     sep = ";"
-  #   )
-  # )
-  #
-  #
-  # "inst\\extdata\\example_corresp.csv"
+# 
+#   fun <- sum
+#   input_data_text <- "data/test/teste/input/REG_DYN_HOU.har"
+#   input_data_text2 <- "data/test/teste/output/b37b-r37r-p37p-2021oct.sl4"
+#   correspondences <- list(
+#     list(
+#       state = c("DST", "ORG", "PRD"),
+#       input = "inst\\extdata\\example_corresp.csv",
+#       sep = ";"
+#     ),
+#     list(
+#       sec_new = c("IND", "COM"),
+#       input = "inst\\extdata\\example_corresp.csv",
+#       sep = ";"
+#     ),
+#     list(
+#       usr_new = "USR",
+#       input = "inst\\extdata\\example_corresp.csv",
+#       sep = ";"
+#     )
+#   )
+#   
+#   var_custom_agg <- list(
+#     list(
+#       var = c("DST", "ORG", "PRD"),
+#       weight = "inst\\extdata\\example_corresp.csv",
+#       fun = weighted.mean()
+#     ),
+#     list(
+#       sec_new = c("IND", "COM"),
+#       input = "inst\\extdata\\example_corresp.csv",
+#       sep = ";"
+#     ),
+#     list(
+#       usr_new = "USR",
+#       input = "inst\\extdata\\example_corresp.csv",
+#       sep = ";"
+#     )
+#   )
+# 
+# 
+#   "inst\\extdata\\example_corresp.csv"
 
 
 

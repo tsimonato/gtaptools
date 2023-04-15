@@ -41,7 +41,6 @@ devtools::install_github("tsimonato/gtaptools")
 This is a basic usage example:
 
 ```{r example}
-
 library(gtaptools)
 ## basic example code
 squeeze_sim(cmf_file = "data/test/teste/termdyn_hou.cmf",
