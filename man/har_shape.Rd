@@ -2,24 +2,24 @@
 % Please edit documentation in R/har_shape.R
 \name{har_shape}
 \alias{har_shape}
-\title{Aggregates headers of data in .har structure.}
+\title{Merge and generate new headers.}
 \usage{
 har_shape(
   input_data,
   new_calculated_vars = NULL,
-  del_var = NULL,
+  del_headers = NULL,
   output_har_file = NULL
 )
 }
 \arguments{
-\item{input_data}{It can indicate a path to a .har file or an existing object in the R environment that has the output structure of the read_har function.}
+\item{input_data}{It must consist of one or more input databases, which must be separated from each other by sublists (see example). In the case of multiple databases, all will be combined for the final output.}
 
-\item{new_calculated_vars}{XXXX}
+\item{new_calculated_vars}{New variables resulting from custom calculations between the headers contained in input_data. Each variable's parameters must be informed (it can be *x, y, z ...*), the function *fun* that represents the calculation to be done, the *new_header_name*, and the *sets* for the output structure. The different headers must have at least one similar set so that it is possible to establish correspondence between them. Please note the example section.}
 
-\item{del_var}{XXXX}
+\item{del_headers}{Vector of characters with the names of headers that must be excluded from the output.}
 
 \item{output_har_file}{Output .har file name.}
 }
 \description{
-It aggregates variables from a .har file on disk or an object with the structure exported by the read_har function. It is possible to adopt customized weights and functions to calculate aggregations. The specification of GTAP models (...) through the *model* parameter is supported so that the respective weight variables are automatically detected according to the model being analyzed.
+Allows the combination of different databases in data.frame or array format. Generate new variables flexibly from custom functions. Calculations can be performed between headers/variables of different dimensions/sets.
 }

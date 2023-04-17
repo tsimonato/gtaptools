@@ -1,8 +1,7 @@
 agg_har <- function(input_data,
                     model = NULL,
                     correspondences,
-                    var_custom_agg,
-                    fun = sum,
+                    vars_weighted_mean,
                     output_har_file = NULL) {
   #' @name agg_har
   #' @title Aggregates headers of data in .har structure.
@@ -10,58 +9,69 @@ agg_har <- function(input_data,
   #' @description It aggregates variables from a .har file on disk or an object with the structure exported by the read_har function. It is possible to adopt customized weights and functions to calculate aggregations. The specification of GTAP models (...) through the *model* parameter is supported so that the respective weight variables are automatically detected according to the model being analyzed.
   #'
   #' @param input_data It can indicate a path to a .har file or an existing object in the R environment that has the output structure of the read_har function.
-  #' @param model Indicates the CGE model being worked on (Supports only GTAP, ....).
+  #' @param model Indicates the CGE model being worked on (Supports only GTAP, ....). For supported models, this information is sufficient to define the variables that must be aggregated through weighted mean.
   #' @param correspondences A list indicating the original sets and new aggregated sets that will be exported. It can indicate a path to a .csv file or an existing object in the R environment that has the correspondences between the *input_data* sets and the new aggregated sets. The first line will be considered as header and identifier, and must necessarily contain the same name as the set that must be aggregated from *input_data*.
-  #' @param fun Function that will be applied to aggregate (default = sum).
+  #' @param vars_weighted_mean Vector of characters relating the variables that must be grouped with a weighted average of their respective weight variables, in the format c( "var" = "weight"). Please note the example section. The sets of the variable and its weight will be made compatible through the aggregation by sum of the weight variable, if necessary.
   #' @param output_har_file Output .har file name.
   #'
-  #' @import dplyr
+  #' @importFrom HARr write_har read_har
+  #' @import data.table
   #'
   #'
   #' @export
 
-# 
-#   fun <- sum
-#   input_data_text <- "data/test/teste/input/REG_DYN_HOU.har"
-#   input_data_text2 <- "data/test/teste/output/b37b-r37r-p37p-2021oct.sl4"
-#   correspondences <- list(
-#     list(
-#       state = c("DST", "ORG", "PRD"),
-#       input = "inst\\extdata\\example_corresp.csv",
-#       sep = ";"
-#     ),
-#     list(
-#       sec_new = c("IND", "COM"),
-#       input = "inst\\extdata\\example_corresp.csv",
-#       sep = ";"
-#     ),
-#     list(
-#       usr_new = "USR",
-#       input = "inst\\extdata\\example_corresp.csv",
-#       sep = ";"
-#     )
-#   )
-#   
-#   var_custom_agg <- list(
-#     list(
-#       var = c("DST", "ORG", "PRD"),
-#       weight = "inst\\extdata\\example_corresp.csv",
-#       fun = weighted.mean()
-#     ),
-#     list(
-#       sec_new = c("IND", "COM"),
-#       input = "inst\\extdata\\example_corresp.csv",
-#       sep = ";"
-#     ),
-#     list(
-#       usr_new = "USR",
-#       input = "inst\\extdata\\example_corresp.csv",
-#       sep = ";"
-#     )
-#   )
-# 
-# 
-#   "inst\\extdata\\example_corresp.csv"
+  
+  
+  # output_har_file = "test.har"
+  # fun <- sum
+  # input_data_text <- "data/test/teste/input/REG_DYN_HOU.har"
+  # input_data_text2 <- "data/test/teste/output/b37b-r37r-p37p-2021oct.sl4"
+  # correspondences <- list(
+  #   list(
+  #     state = c("DST", "ORG", "PRD"),
+  #     input = "inst\\extdata\\example_corresp.csv",
+  #     sep = ";"
+  #   ),
+  #   list(
+  #     sec_new = c("IND", "COM"),
+  #     input = "inst\\extdata\\example_corresp.csv",
+  #     sep = ";"
+  #   ),
+  #   list(
+  #     usr_new = "USR",
+  #     input = "inst\\extdata\\example_corresp.csv",
+  #     sep = ";"
+  #   )
+  # )
+  # 
+  # var_custom_agg <- list(
+  #   list(
+  #     var = c("DST", "ORG", "PRD"),
+  #     weight = "inst\\extdata\\example_corresp.csv",
+  #     fun = weighted.mean
+  #   ),
+  #   list(
+  #     sec_new = c("IND", "COM"),
+  #     input = "inst\\extdata\\example_corresp.csv",
+  #     sep = ";"
+  #   ),
+  #   list(
+  #     usr_new = "USR",
+  #     input = "inst\\extdata\\example_corresp.csv",
+  #     sep = ";"
+  #   )
+  # )
+  # 
+  # 
+  # vars_weighted_mean <- c(
+  #   "MAKE" = "DPRC",
+  #   "STOK" = "TARG"
+  # )
+  # 
+  # names(a[1])
+  # 
+  # 
+  # "inst\\extdata\\example_corresp.csv"
 
 
 
@@ -111,7 +121,7 @@ agg_har <- function(input_data,
             col <- 2
             for (col in 2:length(corr_to_merge)) {
               cols_agg <- c(col_names[1], col_names[col])
-              header <- data.table::as.data.table(header)
+              header <- data.table::setDT(header)
               header <- data.table::merge.data.table(header,
                 unique(corr_to_merge[cols_agg]),
                 by = names(corr_to_merge[col])
@@ -127,8 +137,8 @@ agg_har <- function(input_data,
               cols_group <- as.data.frame.table(input_data[[h]])
               cols_group$Freq <- NULL
               cols_group <- names(cols_group)
-              header <- data.table::as.data.table(header)
-              header <- header[, lapply(.SD, fun, na.rm = T), by = cols_group]
+              #header <- data.table::as.data.table(header)
+              header <- data.table::setDT(header)[, lapply(.SD, fun, na.rm = T), by = cols_group]
               header <- as.data.frame(header)
             }
 

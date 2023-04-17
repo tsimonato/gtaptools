@@ -8,19 +8,18 @@ agg_har(
   input_data,
   model = NULL,
   correspondences,
-  var_custom_agg,
-  fun = sum,
+  vars_weighted_mean,
   output_har_file = NULL
 )
 }
 \arguments{
 \item{input_data}{It can indicate a path to a .har file or an existing object in the R environment that has the output structure of the read_har function.}
 
-\item{model}{Indicates the CGE model being worked on (Supports only GTAP, ....).}
+\item{model}{Indicates the CGE model being worked on (Supports only GTAP, ....). For supported models, this information is sufficient to define the variables that must be aggregated through weighted mean.}
 
 \item{correspondences}{A list indicating the original sets and new aggregated sets that will be exported. It can indicate a path to a .csv file or an existing object in the R environment that has the correspondences between the *input_data* sets and the new aggregated sets. The first line will be considered as header and identifier, and must necessarily contain the same name as the set that must be aggregated from *input_data*.}
 
-\item{fun}{Function that will be applied to aggregate (default = sum).}
+\item{vars_weighted_mean}{Vector of characters relating the variables that must be grouped with a weighted average of their respective weight variables, in the format c( "var" = "weight"). Please note the example section. The sets of the variable and its weight will be made compatible through the aggregation by sum of the weight variable, if necessary.}
 
 \item{output_har_file}{Output .har file name.}
 }

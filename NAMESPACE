@@ -3,4 +3,7 @@
 export(agg_har)
 export(har_shape)
 export(squeeze_sim)
-import(dplyr)
+export(summarise_header)
+import(data.table)
+importFrom(HARr,read_har)
+importFrom(HARr,write_har)
