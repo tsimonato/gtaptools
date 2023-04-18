@@ -16,6 +16,15 @@ squeeze_sim <-
     #'
     #' @export
     
+    cmf_file = "inst\\extdata\\oranig_example\\ORNG03SR.CMF"
+    zip_file = "oranig_example.zip"
+    output = T
+    add_files = NULL
+    output = F
+    bat = T
+    
+    
+    
     zip_file <- sub("\\..*$", "", zip_file)
     
     cmf <- tolower(readChar(cmf_file, file.info(cmf_file)$size))
@@ -23,6 +32,8 @@ squeeze_sim <-
     cmf <- gsub("!.*?(!|\n)", "", cmf, perl = TRUE)
     
     cmf <- unlist(strsplit(cmf, "\\r\\n"))
+    
+    cmf <- trimws(unlist(strsplit(cmf, ";")))
     
     main_ext <- c(".tab",
                   ".cmf",
