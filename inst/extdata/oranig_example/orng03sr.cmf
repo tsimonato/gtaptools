@@ -1,0 +1,69 @@
+! Command file for ORANIG model, short-run closure
+
+check-on-read elements = warn; ! very often needed
+cpu=yes ; ! (Optional) Reports CPU times for various stages
+log file = yes;  ! Optional
+auxiliary files = oranig03; ! needed by GEMSIM
+solution file = oranig_example;
+
+! Solution method
+method = GRAGG ;
+steps = 3 5 7 ;
+!method = johansen; ! alternative to above
+
+! Data and summary file
+file basedata = oranig_example.har ;
+updated file basedata =maindata.upd;
+file summary  = summary.har;
+
+! Closure
+
+! Exogenous variables constraining real GDP from the supply side
+exogenous  x1cap               ! all sectoral capital
+           x1lnd               ! all sectoral agricultural land
+           a1cap a1lab_o a1lnd
+           a1prim a1tot a2tot  ! all technological change
+           realwage ;          ! Average real wage
+
+! Exogenous settings of real GDP from the expenditure side
+exogenous  x3toth              ! real private consumption expenditure
+           x2tot_i             ! real investment expenditure
+           x5tot               ! real government expenditure on goods
+           delx6 ;             ! real demands for inventories by commodity
+
+! The demand curves of exports are fixed in both quantity and price axes
+exogenous  f4p f4q               ! individual exports
+           f4p_ntrad f4q_ntrad ; ! collective exports
+! Exogenous foreign prices of imports ;
+exogenous  pf0cif ;
+
+! All tax rates are exogenous 
+exogenous  delPTXRATE f0tax_s  f1tax_csi f2tax_csi f3tax_cs f5tax_cs t0imp
+           f4tax_trad f4tax_ntrad f1oct ;  
+
+! distribution of government demands !
+exogenous  f5 ;
+
+! The nominal exchange rate is the numeraire
+exogenous phi ;
+
+! Number of households and their consumption preferences are exogenous
+exogenous qh a3_s ;
+
+exogenous capslack; ! switch off aggregate capital constraint ! 
+
+!Distribution of investment between industries
+xSet EXOGINV  # 'exogenous' investment industries #
+ (Water, Construction);
+xSubset EXOGINV is subset of IND;
+xSet ENDOGINV # 'endogenous' investment industries # = IND - EXOGINV;
+exogenous finv1(ENDOGINV); ! investment linked to profits
+exogenous finv2(EXOGINV);  ! investment follows aggregate investment
+
+rest endogenous ;
+
+verbal description =
+ ORANIG: Wage cut, DPSV shortrun closure;
+ 
+shock   realwage = -10 ;     ! real wage shift variable
+

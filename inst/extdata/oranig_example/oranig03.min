@@ -1,0 +1,2348 @@
+#FILES
+Logical Name         In/Out Ud  Type Actual Name
+BASEDATA              In     y  HAR
+ Input data file
+SUMMARY               Out    n  HAR
+ Output for summary and checking data
+(Display)             Out    n  DIS
+(Solution)            Out    y  SL4
+(Equations)           Out    y  EQ4
+#TABFILE
+oranig03.tab
+#TMDATE
+at 19:07:16 on 17-SEP-2022
+#STIFILE
+oranig03.sti
+#SETS
+   21
+    1 COM                 -1  u Commodities
+    2 SRC                  2  k Source of commodities
+dom         
+imp         
+    3 IND                 -1  u Industries
+    4 OCC                 -1  u Occupations
+    5 MAR                 -1  u Margin commodities
+    6 NONMAR              -1  u Non-margin commodities
+    7 HOU                 -1  u Households
+    8 TRADEXP             -1  u Individual export commodities
+    9 NTRADEXP            -1  u Collective Export Commodities
+   10 DEST                 7  k Sale Categories
+Interm      
+Invest      
+HouseH      
+Export      
+GovGE       
+Stocks      
+Margins     
+   11 LOCUSER              6  k Non-export users
+Interm      
+Invest      
+HouseH      
+GovGE       
+Stocks      
+Margins     
+   12 DESTPLUS             8  k Sale Categories
+Interm      
+Invest      
+HouseH      
+Export      
+GovGE       
+Stocks      
+Margins     
+Total       
+   13 FANCAT               4  k Parts of Fan decomposition
+LocalMarket 
+DomShare    
+Export      
+Total       
+   14 EXPMAC               6  k Expenditure Aggregates
+Consumption 
+Investment  
+Government  
+Stocks      
+Exports     
+Imports     
+   15 INCMAC               4  k Income Aggregates
+Land        
+Labour      
+Capital     
+IndirectTax 
+   16 TAXMAC               8  k Tax Aggregates
+Intermediate
+Investment  
+Consumption 
+Exports     
+Government  
+OCT         
+ProdTax     
+Tariff      
+   17 COSTCAT              9  k Cost Categories
+IntDom      
+IntImp      
+Margin      
+ComTax      
+Lab         
+Cap         
+Lnd         
+ProdTax     
+OCT         
+   18 SALECAT2             6  k SALE Categories
+Interm      
+Invest      
+HouseH      
+Export      
+GovGE       
+Stocks      
+   19 FLOWTYPE             3  k Type of flow
+Basic       
+Margin      
+TAX         
+   20 FAC                  3  k Primary Factors
+Lab         
+Cap         
+Lnd         
+   21 WAGGSET              9  k Instructions to AGGHAR for weighted aggregation of parameters
+SCET@@@@1TOT
+P018@@@@4PUR
+ITEX@@@@4PUR
+XPEL@@@@3PUR
+P028@@@@VLAD
+SLAB@@@@LAB1
+xx1ARM@@1PUR
+xx2ARM@@2PUR
+xx3ARM@@3PUR
+#VARIABLES
+       175
+    1 x1                      -1     3 ? Intermediate basic demands
+    1    2    3
+    2 x2                      -1     3 ? Investment basic demands
+    1    2    3
+    3 x3                      -1     2 ? Household basic demands
+    1    2
+    4 x4                      -1     1 ? Export basic demands
+    1
+    5 x5                      -1     2 ? Government basic demands
+    1    2
+    6 delx6                   -1     2 ? Inventories demands
+    1    2
+    7 p0                      -1     2 ? Basic prices for local users
+    1    2
+    8 pe                      -1     1 ? Basic price of exportables
+    1
+    9 delV6                   -1     2 ? Value of inventories
+    1    2
+   10 x3mar                   -1     3 ? Household margin demands
+    1    2    5
+   11 x4mar                   -1     2 ? Export margin demands
+    1    5
+   12 x5mar                   -1     3 ? Government margin demands
+    1    2    5
+   13 p0dom                   -1     1 ? Basic price of domestic goods = p0(c,"dom")
+    1
+   14 delV3TAX                -1     2 ? Hhold tax rev
+    1    2
+   15 delV4TAX                -1     1 ? Export tax rev
+    1
+   16 delV5TAX                -1     2 ? Govmnt tax rev
+    1    2
+   17 x1lab                   -1     2 ? Employment by industry and occupation
+    3    4
+   18 p1lab                   -1     2 ? Wages by industry and occupation
+    3    4
+   19 x1cap                   -1     1 ? Current capital stock
+    3
+   20 p1cap                   -1     1 ? Rental price of capital
+    3
+   21 x1lnd                   -1     1 ? Use of land
+    3
+   22 p1lnd                   -1     1 ? Rental price of land
+    3
+   23 delV1PTX                -1     1 ? Ordinary change in production tax revenue
+    3
+   24 x1oct                   -1     1 ? Demand for "other cost" tickets
+    3
+   25 p1oct                   -1     1 ? Price of "other cost" tickets
+    3
+   26 delV0TAR                -1     1 ? Ordinary change in tariff revenue
+    1
+   27 p1                      -1     3 ? Purchasers price, intermediate
+    1    2    3
+   28 p3                      -1     2 ? Purchasers price, household
+    1    2
+   29 p4                      -1     1 ? Purchasers price, exports,loc$
+    1
+   30 p5                      -1     2 ? Purchasers price, government
+    1    2
+   31 p1lab_o                 -1     1 ? Price to each industry of labour composite
+    3
+   32 x1lab_o                 -1     1 ? Effective labour input
+    3
+   33 p1prim                  -1     1 ? Effective price of primary factor composite
+    3
+   34 x1prim                  -1     1 ? Primary factor composite
+    3
+   35 a1lab_o                 -1     1 ? Labor-augmenting technical change
+    3
+   36 a1cap                   -1     1 ? Capital-augmenting technical change
+    3
+   37 a1lnd                   -1     1 ? Land-augmenting technical change
+    3
+   38 delV1PRIM               -1     1 ? Ordinary change in cost of primary factors
+    3
+   39 x1_s                    -1     2 ? Intermediate use of imp/dom composite
+    1    3
+   40 p1_s                    -1     2 ? Price, intermediate imp/dom composite
+    1    3
+   41 p1mat                   -1     1 ? Intermediate cost price index
+    3
+   42 p1var                   -1     1 ? Short-run variable cost price index
+    3
+   43 x1tot                   -1     1 ? Activity level or value-added
+    3
+   44 a1prim                  -1     1 ? All factor augmenting technical change
+    3
+   45 a1tot                   -1     1 ? All input augmenting technical change
+    3
+   46 p1tot                   -1     1 ? Average input/output price
+    3
+   47 delV1CST                -1     1 ? Change in ex-tax cost of production
+    3
+   48 delV1TOT                -1     1 ? Change in tax-inc cost of production
+    3
+   49 delPTXRATE              -1     1 ? Change in rate of production tax
+    3
+   50 p1cst                   -1     1 ? Index of production costs (for AnalyseGE)
+    3
+   51 q1                      -1     2 ? Output by commodity and industry
+    1    3
+   52 p0com                   -1     1 ? General output price of locally-produced commodity
+    1
+   53 x0com                   -1     1 ? Output of commodities
+    1
+   54 x0dom                   -1     1 ? Output of commodities for local market
+    1
+   55 a2tot                   -1     1 ? Neutral technical change - investment
+    3
+   56 p2tot                   -1     1 ? Cost of unit of capital
+    3
+   57 x2tot                   -1     1 ? Investment by using industry
+    3
+   58 x3_s                    -1     1 ? Household use of imp/dom composite
+    1
+   59 p3_s                    -1     1 ? Price, household imp/dom composite
+    1
+   60 p3toth                  -1     1 ? Consumer price index
+    7
+   61 x3toth                  -1     1 ? Real household consumption
+    7
+   62 w3toth                  -1     1 ? Nominal total household consumption
+    7
+   63 w3luxh                  -1     1 ? Nominal luxury consumption
+    7
+   64 qh                      -1     1 ? Number of households
+    7
+   65 utilityh                -1     1 ? Utility per household
+    7
+   66 x3lux                   -1     2 ? Household - supernumerary demands
+    1    7
+   67 x3sub                   -1     2 ? Household - subsistence demands
+    1    7
+   68 a3lux                   -1     2 ? Taste change, supernumerary demands
+    1    7
+   69 a3sub                   -1     2 ? Taste change, subsistence demands
+    1    7
+   70 a3_s                    -1     2 ? Taste change, hhold imp/dom composite
+    1    7
+   71 x3_sh                   -1     2 ? Consumption, hhold imp/dom composite
+    1    7
+   72 p3tot                    1     0 ? Consumer price index
+   73 x3tot                    1     0 ? Real household consumption
+   74 w3tot                    1     0 ? Nominal total household consumption
+   75 phi                      1     0 ? Exchange rate, local currency/$world
+   76 f4p                     -1     1 ? Price (upward) shift in export demand schedule
+    1
+   77 f4q                     -1     1 ? Quantity (right) shift in export demands
+    1
+   78 x4_ntrad                 1     0 ? Quantity, collective export aggregate
+   79 f4p_ntrad                1     0 ? Upward demand shift, collective export aggregate
+   80 f4q_ntrad                1     0 ? Right demand shift, collective export aggregate
+   81 p4_ntrad                 1     0 ? Price, collective export aggregate
+   82 f5tot                    1     0 ? Overall shift term for government demands
+   83 f5tot2                   1     0 ? Ratio between f5tot and x3tot
+   84 f5                      -1     2 ? Government demand shift
+    1    2
+   85 fx6                     -1     2 ? Shifter on rule for stocks
+    1    2
+   86 delSale                 -1     3 ? Sales aggregates
+    1    2   10
+   87 x0imp                   -1     1 ? Total supplies of imported goods
+    1
+   88 t3                      -1     2 ? Power of tax on household
+    1    2
+   89 t4                      -1     1 ? Power of tax on export
+    1
+   90 t5                      -1     2 ? Power of tax on government
+    1    2
+   91 f1tax_csi                1     0 ? Uniform % change in powers of taxes on intermediate usage
+   92 f2tax_csi                1     0 ? Uniform % change in powers of taxes on investment
+   93 f3tax_cs                 1     0 ? Uniform % change in powers of taxes on household usage
+   94 f4tax_ntrad              1     0 ? Uniform % change in powers of taxes on nontradtnl exports
+   95 f4tax_trad               1     0 ? Uniform % change in powers of taxes on tradtnl exports
+   96 f5tax_cs                 1     0 ? Uniform % change in powers of taxes on government usage
+   97 f0tax_s                 -1     1 ? General sales tax shifter
+    1
+   98 pf0cif                  -1     1 ? C.I.F. foreign currency import prices
+    1
+   99 t0imp                   -1     1 ? Power of tariff
+    1
+  100 delV1tax_csi             1     0 ? Aggregate revenue from indirect taxes on intermediate
+  101 delV2tax_csi             1     0 ? Aggregate revenue from indirect taxes on investment
+  102 delV3tax_cs              1     0 ? Aggregate revenue from indirect taxes on households
+  103 delV4tax_c               1     0 ? Aggregate revenue from indirect taxes on export
+  104 delV5tax_cs              1     0 ? Aggregate revenue from indirect taxes on government
+  105 delV0tar_c               1     0 ? Aggregate tariff revenue
+  106 w1lab_io                 1     0 ? Aggregate payments to labour
+  107 w1cap_i                  1     0 ? Aggregate payments to capital
+  108 w1lnd_i                  1     0 ? Aggregate payments to land
+  109 w1prim_i                 1     0 ? Aggregate primary factor payments
+  110 w1oct_i                  1     0 ? Aggregate "other cost" ticket payments
+  111 delV1PTX_i               1     0 ? Ordinary change in all-industry production tax revenue
+  112 delV0tax_csi             1     0 ? Aggregate revenue from all indirect taxes
+  113 w0tax_csi                1     0 ? Aggregate revenue from all indirect taxes
+  114 w0gdpinc                 1     0 ? Nominal GDP from income side
+  115 x2tot_i                  1     0 ? Aggregate real investment expenditure
+  116 p2tot_i                  1     0 ? Aggregate investment price index
+  117 w2tot_i                  1     0 ? Aggregate nominal investment
+  118 x4tot                    1     0 ? Export volume index
+  119 p4tot                    1     0 ? Exports price index, local currency
+  120 w4tot                    1     0 ? Local currency border value of exports
+  121 x5tot                    1     0 ? Aggregate real government demands
+  122 p5tot                    1     0 ? Government price index
+  123 w5tot                    1     0 ? Aggregate nominal value of government demands
+  124 x6tot                    1     0 ? Aggregate real inventories
+  125 p6tot                    1     0 ? Inventories price index
+  126 w6tot                    1     0 ? Aggregate nominal value of inventories
+  127 x0cif_c                  1     0 ? Import volume index, C.I.F. weights
+  128 p0cif_c                  1     0 ? Imports price index, C.I.F., local currency
+  129 w0cif_c                  1     0 ? C.I.F. local currency value of imports
+  130 x0gne                    1     0 ? Real GNE
+  131 p0gne                    1     0 ? GNE price index
+  132 w0gne                    1     0 ? Nominal GNE
+  133 x0gdpexp                 1     0 ? Real GDP from expenditure side
+  134 p0gdpexp                 1     0 ? GDP price index, expenditure side
+  135 w0gdpexp                 1     0 ? Nominal GDP from expenditure side
+  136 delB                     1     0 ? (Nominal balance of trade)/{nominal GDP}
+  137 x0imp_c                  1     0 ? Import volume index, duty-paid weights
+  138 w0imp_c                  1     0 ? Value of imports plus duty
+  139 p0imp_c                  1     0 ? Duty-paid imports price index, local currency
+  140 p0realdev                1     0 ? Real devaluation
+  141 p0toft                   1     0 ? Terms of trade
+  142 employ                  -1     1 ? Employment by industry
+    3
+  143 employ_i                 1     0 ? Aggregate employment: wage bill weights
+  144 x1cap_i                  1     0 ? Aggregate capital stock, rental weights
+  145 x1lnd_i                  1     0 ? Aggregate land stock, rental weights
+  146 x1prim_i                 1     0 ? Aggregate effective primary factor use
+  147 xgdpfac                  1     0 ? Real GDP at factor cost (inputs) = x1prim_i
+  148 p1prim_i                 1     0 ? Index of factor cost
+  149 p1lab_io                 1     0 ? Average nominal wage
+  150 realwage                 1     0 ? Average real wage
+  151 p1cap_i                  1     0 ? Average capital rental
+  152 p1lnd_i                  1     0 ? Average land rental
+  153 ggro                    -1     1 ? Gross growth rate of capital = Investment/capital
+    3
+  154 gret                    -1     1 ? Gross rate of return = Rental/[Price of new capital]
+    3
+  155 finv1                   -1     1 ? Shifter to enforce DPSV investment rule
+    3
+  156 finv2                   -1     1 ? Shifter for "exogenous" investment rule
+    3
+  157 finv3                   -1     1 ? Shifter for longrun investment rule
+    3
+  158 invslack                 1     0 ? Investment slack variable for exogenizing aggregate investment
+  159 f2tot                    1     0 ? Ratio, investment/consumption
+  160 fgret                   -1     1 ? Shifter to lock together industry rates of return
+    3
+  161 capslack                 1     0 ? Slack variable to allow fixing aggregate capital
+  162 x1lab_i                 -1     1 ? Employment by occupation
+    4
+  163 f1lab_io                 1     0 ? Overall wage shifter
+  164 p1lab_i                 -1     1 ? Average wage of occupation
+    4
+  165 f1oct                   -1     1 ? Shift in price of "other cost" tickets
+    3
+  166 f3tot                    1     0 ? Ratio, consumption/ GDP
+  167 p0imp                   -1     1 ? Basic price of imported goods = p0(c,"imp")
+    1
+  168 SalesDecomp             -1     2 ? Sales decomposition
+    1   12
+  169 x0loc                   -1     1 ? Real percent change in LOCSALES (dom+imp)
+    1
+  170 fandecomp               -1     2 ? Fan decomposition
+    1   13
+  171 contGDPexp               6     1 ? Contributions to real expenditure-side GDP
+   14
+  172 contBOT                  1     0 ? Contribution of BOT to real expenditure-side GDP
+  173 x0gdpinc                 1     0 ? Real GDP from the income side
+  174 continctax               1     0 ? Tax part of income side real GDP decomposition
+  175 continctech              1     0 ? Tech change part of income side real GDP decomposition
+#VCSTAT
+bbbcbcccbbbbcbcbbbcccccbbcbbcbccccccccbb
+bbcccccccbbccccccccccccccbbbbccccccccccc
+cccccccbcbcccccccccccccccccccccccccccccc
+cccccccccccccccccccccccccccccccccccccccc
+ccccccccccccccc
+#VCTP
+pppppcppcppppcccppppppcppcpppppppppppcpp
+ppppppcccppppppppppppppppppppppppppppppp
+ppppccpppppppppppppccccccpppppccpppppppp
+pppppppppppppppcpppppppppppppppppppppppp
+pppppppcpcccppp
+#SUBSETS
+     7
+     1     5     1
+     2     6     1
+     3     8     1
+     4     9     1
+     5    11    10
+     6    10    12
+     7    11    12
+#COEFFICIENTS
+  226
+    1 V1BAS           3 r y y  Intermediate basic flows
+    1    2    3
+    2 V2BAS           3 r y y  Investment basic flows
+    1    2    3
+    3 V3BAS           2 r y y  Household basic flows
+    1    2
+    4 V4BAS           1 r y y  Export basic flows
+    1
+    5 V5BAS           2 r y y  Government basic flows
+    1    2
+    6 V6BAS           2 r y y  Inventories basic flows
+    1    2
+    7 V1MAR           4 r y y  Intermediate margins
+    1    2    3    5
+    8 V2MAR           4 r y y  Investment margins
+    1    2    3    5
+    9 V3MAR           3 r y y  Households margins
+    1    2    5
+   10 V4MAR           2 r y y  Export margins
+    1    5
+   11 V5MAR           3 r y y  Government margins
+    1    2    5
+   12 V1TAX           3 r y y  Taxes on intermediate
+    1    2    3
+   13 V2TAX           3 r y y  Taxes on investment
+    1    2    3
+   14 V3TAX           2 r y y  Taxes on households
+    1    2
+   15 V4TAX           1 r y y  Taxes on export
+    1
+   16 V5TAX           2 r y y  Taxes on government
+    1    2
+   17 V1LAB           2 r y y  Wage bill matrix
+    3    4
+   18 V1CAP           1 r y y  Capital rentals
+    3
+   19 V1LND           1 r y y  Land rentals
+    3
+   20 V1PTX           1 r y y  Production tax
+    3
+   21 V1OCT           1 r y y  Other cost tickets
+    3
+   22 V0TAR           1 r y y  Tariff revenue
+    1
+   23 V1PUR           3 r n n  Intermediate purch. value
+    1    2    3
+   24 V2PUR           3 r n n  Investment purch. value
+    1    2    3
+   25 V3PUR           2 r n n  Households purch. value
+    1    2
+   26 V4PUR           1 r n n  Export purch. value
+    1
+   27 V5PUR           2 r n n  Government purch. value
+    1    2
+   28 SIGMA1LAB       1 r y r  CES substitution between skill types
+    3
+   29 V1LAB_O         1 r n n  Total labour bill in industry i
+    3
+   30 TINY            0 r n n  Small number to prevent zerodivides or singular matrix
+   31 SIGMA1PRIM      1 r y r  CES substitution, primary factors
+    3
+   32 V1PRIM          1 r n n  Total factor input to industry i
+    3
+   33 SIGMA1          1 r y r  Armington elasticities: intermediate
+    1
+   34 V1PUR_S         2 r n n  Dom+imp intermediate purch. value
+    1    3
+   35 S1              3 r n n  Intermediate source shares
+    1    2    3
+   36 V1MAT           1 r n n  Total intermediate cost for industry i
+    3
+   37 V1VAR           1 r n n  Short-run variable cost for industry i
+    3
+   38 V1CST           1 r n n  Total cost of industry i
+    3
+   39 V1TOT           1 r n n  Total industry cost plus tax
+    3
+   40 PTXRATE         1 r n n  Rate of production tax
+    3
+   41 MAKE            2 r y y  Multiproduction matrix
+    1    3
+   42 SIGMA1OUT       1 r y r  CET transformation elasticities
+    3
+   43 MAKE_C          1 r n n  All production by industry i
+    3
+   44 MAKE_I          1 r n n  Total production of commodities
+    1
+   45 EXPSHR          1 r n n  Share going to exports
+    1
+   46 TAU             1 r n n  1/Elast. of transformation, exportable/locally used
+    1
+   47 SIGMA2          1 r y r  Armington elasticities: investment
+    1
+   48 V2PUR_S         2 r n n  Dom+imp investment purch. value
+    1    3
+   49 S2              3 r n n  Investment source shares
+    1    2    3
+   50 V2TOT           1 r n n  Total capital created for industry i
+    3
+   51 SIGMA3          1 r y r  Armington elasticities: households
+    1
+   52 V3PUR_S         1 r n n  Dom+imp households purch. value
+    1
+   53 S3              2 r n n  Household source shares
+    1    2
+   54 V3TOTh          1 r n n  Total purchases by households
+    7
+   55 V3TOT           0 r n n  Total purchases by households
+   56 FRISCH          1 r y y  Frisch LES parameter= - (total/luxury)
+    7
+   57 EPS             2 r y y  Household expenditure elasticities
+    1    7
+   58 S3_S            2 r n n  Household average budget shares
+    1    7
+   59 B3LUX           2 r n n  Ratio, (supernumerary /total expenditure)
+    1    7
+   60 S3LUX           2 r n n  Marginal household budget shares
+    1    7
+   61 V3PUR_SH        2 r y y  Household use
+    1    7
+   62 EPSTOTH         1 r n n  Average Engel elasticity: should = 1
+    7
+   63 IsIndivExp      1 r y r  >0.5 For individual export commodities
+    1
+   64 EXP_ELAST       1 r y r  Export demand elasticities: typical value -5.0
+    1
+   65 V4NTRADEXP      0 r n n  Total collective export earnings
+   66 EXP_ELAST_NT    0 r y r  Collective export demand elasticity
+   67 LEVP0           2 r n y  Levels basic prices
+    1    2
+   68 MARSALES        1 r n n  Total usage for margins purposes
+    1
+   69 SALE            3 r n n  Sales aggregates
+    1    2   10
+   70 V0IMP           1 r n n  Total basic-value imports of good c
+    1
+   71 SALES           1 r n n  Total sales of domestic commodities
+    1
+   72 DOMSALES        1 r n n  Total sales to local market
+    1
+   73 V1TAX_CSI       0 r n n  Total intermediate tax revenue
+   74 V2TAX_CSI       0 r n n  Total investment tax revenue
+   75 V3TAX_CS        0 r n n  Total households tax revenue
+   76 V4TAX_C         0 r n n  Total export tax revenue
+   77 V5TAX_CS        0 r n n  Total government tax revenue
+   78 V0TAR_C         0 r n n  Total tariff revenue
+   79 V1CAP_I         0 r n n  Total payments to capital
+   80 V1LAB_IO        0 r n n  Total payments to labour
+   81 V1LND_I         0 r n n  Total payments to land
+   82 V1PTX_I         0 r n n  Total production tax/subsidy
+   83 V1OCT_I         0 r n n  Total other cost ticket payments
+   84 V1PRIM_I        0 r n n  Total primary factor payments
+   85 V0GDPINC        0 r n n  Nominal GDP from income side
+   86 V0TAX_CSI       0 r n n  Total indirect tax revenue
+   87 V0CIF           1 r n n  Total ex-duty imports of good c
+    1
+   88 V0CIF_C         0 r n n  Total local currency import costs, excluding tariffs
+   89 V0IMP_C         0 r n n  Total basic-value imports (includes tariffs)
+   90 V2TOT_I         0 r n n  Total investment usage
+   91 V4TOT           0 r n n  Total export earnings
+   92 V5TOT           0 r n n  Total value of government demands
+   93 V6TOT           0 r n n  Total value of inventories
+   94 V0GNE           0 r n n  GNE from expenditure side
+   95 V0GDPEXP        0 r n n  GDP from expenditure side
+   96 V1LAB_I         1 r n n  Total wages, occupation o
+    4
+   97 INITSALES       1 r n y  Initial volume of SALES at current prices
+    1
+   98 LOCSALES        1 r n n  Total local sales of dom + imp good c
+    1
+   99 INITGDP         0 r n y  Initial real GDP at current prices
+  100 DIFFIND         1 r n n  COSTS-MAKE_C : should be zero
+    3
+  101 DIFFCOM         1 r n n  SALES-MAKE_I : should be zero
+    1
+  102 EXPGDP          1 r n n  Expenditure Aggregates
+   14
+  103 INCGDP          1 r n n  Income Aggregates
+   15
+  104 TAX             1 r n n  Tax Aggregates
+   16
+  105 COSTMAT         2 r n n  Cost Matrix
+    3   17
+  106 SALEMAT2        4 r n n  Basic, margin and tax components of purchasers values
+    1   19    2   18
+  107 IMPSHR          1 r n n  Share of imports in local market
+    1
+  108 SUPPLYELAST     1 r n n  Short-run supply elasticity
+    3
+  109 FACTOR          2 r n n  Primary Factor Costs
+    3   20
+  110 V1PUR_SI        1 r n n  Dom+imp intermediate purch. value
+    1
+  111 V2PUR_SI        1 r n n  Dom+imp investment purch. value
+    1
+  112 V5PUR_S         1 r n n  Dom+imp government purch. value
+    1
+  113 V6BAS_S         1 r n n  Dom+imp inventories
+    1
+  114 TARFRATE        1 r n n  Ad valorem tariff rate
+    1
+  115 C00115          3 r n n Introduced during condensation
+    1    2    3
+  116 C00116          3 r n n Introduced during condensation
+    1    3    5
+  117 C00117          2 r n n Introduced during condensation
+    3    5
+  118 C00118          2 r n n Introduced during condensation
+    3    5
+  119 C00119          2 r n n Introduced during condensation
+    3    5
+  120 C00120          1 r n n Introduced during condensation
+    3
+  121 C00121          1 r n n Introduced during condensation
+    3
+  122 C00122          0 r n n Introduced during condensation
+  123 C00123          1 r n n Introduced during condensation
+    4
+  124 C00124          3 r n n Introduced during condensation
+    1    2    3
+  125 C00125          3 r n n Introduced during condensation
+    1    3    5
+  126 C00126          2 r n n Introduced during condensation
+    3    5
+  127 C00127          1 r n n Introduced during condensation
+    3
+  128 C00128          2 r n n Introduced during condensation
+    1    2
+  129 C00129          2 r n n Introduced during condensation
+    1    5
+  130 C00130          2 r n n Introduced during condensation
+    1    2
+  131 C00131          1 r n n Introduced during condensation
+    5
+  132 C00132          1 r n n Introduced during condensation
+    1
+  133 C00133          3 r n n Introduced during condensation
+    1    2    3
+  134 C00134          1 r n n Introduced during condensation
+    3
+  135 C00135          2 r n n Introduced during condensation
+    1    3
+  136 C00136          1 r n n Introduced during condensation
+    3
+  137 C00137          2 r n n Introduced during condensation
+    1    3
+  138 C00138          1 r n n Introduced during condensation
+    3
+  139 C00139          2 r n n Introduced during condensation
+    1    3
+  140 C00140          3 r n n Introduced during condensation
+    1    2    3
+  141 C00141          1 r n n Introduced during condensation
+    3
+  142 C00142          2 r n n Introduced during condensation
+    1    3
+  143 C00143          1 r n n Introduced during condensation
+    1
+  144 C00144          0 r n n Introduced during condensation
+  145 C00145          1 r n n Introduced during condensation
+    1
+  146 C00146          3 r n n Introduced during condensation
+    1    2    3
+  147 C00147          2 r n n Introduced during condensation
+    3    5
+  148 C00148          2 r n n Introduced during condensation
+    1    3
+  149 C00149          1 r n n Introduced during condensation
+    3
+  150 C00150          2 r n n Introduced during condensation
+    1    3
+  151 C00151          2 r n n Introduced during condensation
+    1    2
+  152 C00152          3 r n n Introduced during condensation
+    1    2    2
+  153 C00153          3 r n n Introduced during condensation
+    1    2    5
+  154 C00154          2 r n n Introduced during condensation
+    1    2
+  155 C00155          2 r n n Introduced during condensation
+    1    2
+  156 C00156          1 r n n Introduced during condensation
+    5
+  157 C00157          2 r n n Introduced during condensation
+    1    3
+  158 C00158          0 r n n Introduced during condensation
+  159 C00159          1 r n n Introduced during condensation
+    1
+  160 C00160          1 r n n Introduced during condensation
+    3
+  161 C00161          1 r n n Introduced during condensation
+    3
+  162 C00162          1 r n n Introduced during condensation
+    3
+  163 C00163          0 r n n Introduced during condensation
+  164 C00164          1 r n n Introduced during condensation
+    3
+  165 C00165          1 r n n Introduced during condensation
+    3
+  166 C00166          1 r n n Introduced during condensation
+    4
+  167 C00167          3 r n n Introduced during condensation
+    1    2    5
+  168 C00168          2 r n n Introduced during condensation
+    5    5
+  169 C00169          3 r n n Introduced during condensation
+    1    3    5
+  170 C00170          1 r n n Introduced during condensation
+    5
+  171 C00171          2 r n n Introduced during condensation
+    1    5
+  172 C00172          1 r n n Introduced during condensation
+    3
+  173 C00173          2 r n n Introduced during condensation
+    3    5
+  174 C00174          1 r n n Introduced during condensation
+    3
+  175 C00175          1 r n n Introduced during condensation
+    3
+  176 C00176          2 r n n Introduced during condensation
+    1    2
+  177 C00177          3 r n n Introduced during condensation
+    1    2    2
+  178 C00178          3 r n n Introduced during condensation
+    1    2    5
+  179 C00179          2 r n n Introduced during condensation
+    1    2
+  180 C00180          2 r n n Introduced during condensation
+    1    2
+  181 C00181          1 r n n Introduced during condensation
+    5
+  182 C00182          2 r n n Introduced during condensation
+    1    3
+  183 C00183          0 r n n Introduced during condensation
+  184 C00184          1 r n n Introduced during condensation
+    1
+  185 C00185          3 r n n Introduced during condensation
+    1    2    5
+  186 C00186          2 r n n Introduced during condensation
+    5    5
+  187 C00187          3 r n n Introduced during condensation
+    1    3    5
+  188 C00188          1 r n n Introduced during condensation
+    5
+  189 C00189          2 r n n Introduced during condensation
+    1    5
+  190 C00190          2 r n n Introduced during condensation
+    3    5
+  191 C00191          1 r n n Introduced during condensation
+    3
+  192 C00192          1 r n n Introduced during condensation
+    5
+  193 C00193          1 r n n Introduced during condensation
+    1
+  194 C00194          1 r n n Introduced during condensation
+    1
+  195 C00195          0 r n n Introduced during condensation
+  196 C00196          1 r n n Introduced during condensation
+    1
+  197 C00197          2 r n n Introduced during condensation
+    5    5
+  198 C00198          2 r n n Introduced during condensation
+    1    5
+  199 C00199          2 r n n Introduced during condensation
+    1    5
+  200 C00200          1 r n n Introduced during condensation
+    5
+  201 C00201          2 r n n Introduced during condensation
+    1    5
+  202 C00202          0 r n n Introduced during condensation
+  203 C00203          0 r n n Introduced during condensation
+  204 C00204          1 r n n Introduced during condensation
+    5
+  205 C00205          0 r n n Introduced during condensation
+  206 C00206          1 r n n Introduced during condensation
+    7
+  207 C00207          2 r n n Introduced during condensation
+    1    7
+  208 C00208          2 r n n Introduced during condensation
+    1    7
+  209 C00209          2 r n n Introduced during condensation
+    1    2
+  210 C00210          1 r n n Introduced during condensation
+    5
+  211 C00211          1 r n n Introduced during condensation
+    3
+  212 C00212          0 r n n Introduced during condensation
+  213 C00213          1 r n n Introduced during condensation
+    1
+  214 C00214          2 r n n Introduced during condensation
+    1    2
+  215 C00215          1 r n n Introduced during condensation
+    5
+  216 C00216          1 r n n Introduced during condensation
+    3
+  217 C00217          0 r n n Introduced during condensation
+  218 C00218          1 r n n Introduced during condensation
+    1
+  219 C00219          1 r n n Introduced during condensation
+    5
+  220 C00220          1 r n n Introduced during condensation
+    1
+  221 C00221          1 r n n Introduced during condensation
+    1
+  222 C00222          0 r n n Introduced during condensation
+  223 C00223          1 r n n Introduced during condensation
+    1
+  224 C00224          0 r n n Introduced during condensation
+  225 C00225          0 r n n Introduced during condensation
+  226 C00226          1 r n n Introduced during condensation
+    1
+#EQUATIONS
+  133
+    1 E_p1lab_o                  -1  1 Price to each industry of labour composite
+    3
+    2 E_x1lab_o                  -1  1 Industry demands for effective labour
+    3
+    3 E_p1cap                    -1  1 Industry demands for capital
+    3
+    4 E_p1lnd                    -1  1 Industry demands for land
+    3
+    5 E_p1prim                   -1  1 Effective price term for factor demand equations
+    3
+    6 E_delV1PRIM                -1  1 Ordinary change in total cost of primary factors
+    3
+    7 E_x1prim                   -1  1 Demands for primary factor composite
+    3
+    8 E_delV1CST                 -1  1
+    3
+    9 E_delV1PTX                 -1  1
+    3
+   10 E_delV1TOT                 -1  1
+    3
+   11 E_p1tot                    -1  1
+    3
+   12 E_x1tot                    -1  1 Average price received by industries
+    3
+   13 E_x0com                    -1  1 Total output of commodities (as simple addition)
+    1
+   14 E_x0dom                    -1  1 Supply of commodities to export market
+    1
+   15 E_pe                       -1  1 Supply of commodities to domestic market
+    1
+   16 E_p0com                    -1  1 Zero pure profits in transformation
+    1
+   17 E_p2tot                    -1  1
+    3
+   18 E_p3_s                     -1  1 Effective price of commodity composite
+    1
+   19 E_x3_sh                    -1  2 Total household demand for composite commodities
+    1    7
+   20 E_utilityh                 -1  1 Change in utility disregarding taste change terms
+    7
+   21 E_x3toth                   -1  1 Real consumption
+    7
+   22 E_p3toth                   -1  1 Consumer price index
+    7
+   23 E_w3toth                   -1  1 Household budget constraint: determines w3lux
+    7
+   24 E_x3tot                     1  0 Real consumption
+   25 E_p3tot                     1  0 Consumer price index
+   26 E_w3tot                     1  0 Household budget constraint: determines w3lux
+   27 E_x3_s                     -1  1 Total household demand for composite commodities
+    1
+   28 E_x4A                      -1  1 Individual export demand functions
+    8
+   29 E_X4B                      -1  1 Collective export demand functions
+    9
+   30 E_p4_ntrad                  1  0 Average price of collective exports
+   31 E_x4_ntrad                  1  0 Demand for collective export aggregate
+   32 E_f5tot                     1  0 Overall government demands shift
+   33 E_delx6                    -1  2 Stocks follow domestic output
+    1    2
+   34 E_delSaleA                 -1  2
+    1    2
+   35 E_delSaleB                 -1  2
+    1    2
+   36 E_delSaleC                 -1  2
+    1    2
+   37 E_delSaleD                 -1  1
+    1
+   38 E_delSaleE                 -1  1
+    1
+   39 E_delSaleF                 -1  2
+    1    2
+   40 E_delSaleG                 -1  2
+    1    2
+   41 E_delSaleH                 -1  1
+    5
+   42 E_delSaleI                 -1  1
+    6
+   43 E_delSaleJ                 -1  1
+    1
+   44 E_p0A                      -1  1 Supply = Demand for domestic commodities
+    1
+   45 E_x0imp                    -1  1 Import volumes
+    1
+   46 E_p4                       -1  1 Zero pure profits in exporting
+    1
+   47 E_t4A                      -1  1 Power of tax on sales to individual exports
+    8
+   48 E_t4B                      -1  1 Power of tax on sales to collective exports
+    9
+   49 E_delV4TAX                 -1  1
+    1
+   50 E_p0B                      -1  1 Zero pure profits in importing
+    1
+   51 E_delV0TAR                 -1  1
+    1
+   52 E_delV1tax_csi              1  0
+   53 E_delV2tax_csi              1  0
+   54 E_delV3tax_cs               1  0
+   55 E_delV4tax_c                1  0
+   56 E_delV5tax_cs               1  0
+   57 E_delV0tar_c                1  0
+   58 E_w1lab_io                  1  0
+   59 E_w1cap_i                   1  0
+   60 E_w1lnd_i                   1  0
+   61 E_w1prim_i                  1  0
+   62 E_w1oct_i                   1  0
+   63 E_delV1PTX_i                1  0
+   64 E_delV0tax_csi              1  0
+   65 E_w0tax_csi                 1  0
+   66 E_w0gdpinc                  1  0
+   67 E_x2tot_i                   1  0
+   68 E_p2tot_i                   1  0
+   69 E_w2tot_i                   1  0
+   70 E_x4tot                     1  0
+   71 E_p4tot                     1  0
+   72 E_w4tot                     1  0
+   73 E_x5tot                     1  0
+   74 E_p5tot                     1  0
+   75 E_w5tot                     1  0
+   76 E_x6tot                     1  0
+   77 E_p6tot                     1  0
+   78 E_w6tot                     1  0
+   79 E_x0cif_c                   1  0
+   80 E_p0cif_c                   1  0
+   81 E_w0cif_c                   1  0
+   82 E_x0gne                     1  0
+   83 E_p0gne                     1  0
+   84 E_w0gne                     1  0
+   85 E_x0gdpexp                  1  0
+   86 E_p0gdpexp                  1  0
+   87 E_w0gdpexp                  1  0
+   88 E_delB                      1  0
+   89 E_x0imp_c                   1  0
+   90 E_p0imp_c                   1  0
+   91 E_w0imp_c                   1  0
+   92 E_p0toft                    1  0
+   93 E_p0realdev                 1  0
+   94 E_employ                   -1  1
+    3
+   95 E_employ_i                  1  0
+   96 E_x1cap_i                   1  0
+   97 E_x1lnd_i                   1  0
+   98 E_x1prim_i                  1  0
+   99 E_xgdpfac                   1  0
+  100 E_p1prim_i                  1  0
+  101 E_p1lab_io                  1  0
+  102 E_realwage                  1  0
+  103 E_p1cap_i                   1  0
+  104 E_p1lnd_i                   1  0
+  105 E_ggro                     -1  1
+    3
+  106 E_gret                     -1  1
+    3
+  107 E_finv1                    -1  1 DPSV investment rule
+    3
+  108 E_finv2                    -1  1 Alternative rule for "exogenous" investment industries
+    3
+  109 E_finv3                    -1  1 Alternative long-run investment rule
+    3
+  110 E_f2tot                     1  0
+  111 E_fgret                    -1  1 Equation to force rates of return to move together
+    3
+  112 E_x1lab_i                  -1  1 Demand equals supply for labour of each skill
+    4
+  113 E_p1lab_i                  -1  1 Average wage of occupation
+    4
+  114 E_f3tot                     1  0 Consumption function
+  115 E_p0dom                    -1  1 Basic price of domestic goods = p0(c,"dom")
+    1
+  116 E_p0imp                    -1  1 Basic price of imported goods = p0(c,"imp")
+    1
+  117 E_SalesDecompA             -1  2
+    1   10
+  118 E_SalesDecompB             -1  1
+    1
+  119 E_x0loc                    -1  1 %Growth in local market
+    1
+  120 E_fandecompA               -1  1 Growth in local market effect
+    1
+  121 E_fandecompB               -1  1 Export effect
+    1
+  122 E_fandecompC               -1  1 Import leakage effect - via residual
+    1
+  123 E_fandecompD               -1  1 Fan total = x0com
+    1
+  124 E_contGDPexpA               1  0
+  125 E_contGDPexpB               1  0
+  126 E_contGDPexpC               1  0
+  127 E_contGDPexpD               1  0
+  128 E_contGDPexpE               1  0
+  129 E_contGDPexpF               1  0
+  130 E_contBOT                   1  0
+  131 E_x0gdpinc                  1  0 Decomposition of real GDP from income side
+  132 E_continctax                1  0
+  133 E_continctech               1  0
+#READS
+   35
+    1     1 V1BAS             1 BASEDATA             1BAS a h     3
+     1     2     3
+    2     2 V2BAS             1 BASEDATA             2BAS a h     3
+     1     2     3
+    3     3 V3BAS             1 BASEDATA             3BAS a h     2
+     1     2
+    4     4 V4BAS             1 BASEDATA             4BAS a h     1
+     1
+    5     5 V5BAS             1 BASEDATA             5BAS a h     2
+     1     2
+    6     6 V6BAS             1 BASEDATA             6BAS a h     2
+     1     2
+    7     7 V1MAR             1 BASEDATA             1MAR a h     4
+     1     2     3     5
+    8     8 V2MAR             1 BASEDATA             2MAR a h     4
+     1     2     3     5
+    9     9 V3MAR             1 BASEDATA             3MAR a h     3
+     1     2     5
+   10    10 V4MAR             1 BASEDATA             4MAR a h     2
+     1     5
+   11    11 V5MAR             1 BASEDATA             5MAR a h     3
+     1     2     5
+   12    12 V1TAX             1 BASEDATA             1TAX a h     3
+     1     2     3
+   13    13 V2TAX             1 BASEDATA             2TAX a h     3
+     1     2     3
+   14    14 V3TAX             1 BASEDATA             3TAX a h     2
+     1     2
+   15    15 V4TAX             1 BASEDATA             4TAX a h     1
+     1
+   16    16 V5TAX             1 BASEDATA             5TAX a h     2
+     1     2
+   17    17 V1LAB             1 BASEDATA             1LAB a h     2
+     3     4
+   18    18 V1CAP             1 BASEDATA             1CAP a h     1
+     3
+   19    19 V1LND             1 BASEDATA             1LND a h     1
+     3
+   20    20 V1PTX             1 BASEDATA             1PTX a h     1
+     3
+   21    21 V1OCT             1 BASEDATA             1OCT a h     1
+     3
+   22    22 V0TAR             1 BASEDATA             0TAR a h     1
+     1
+   23    28 SIGMA1LAB         1 BASEDATA             SLAB a h     1
+     3
+   24    31 SIGMA1PRIM        1 BASEDATA             P028 a h     1
+     3
+   25    33 SIGMA1            1 BASEDATA             1ARM a h     1
+     1
+   26    41 MAKE              1 BASEDATA             MAKE a h     2
+     1     3
+   27    42 SIGMA1OUT         1 BASEDATA             SCET a h     1
+     3
+   28    47 SIGMA2            1 BASEDATA             2ARM a h     1
+     1
+   29    51 SIGMA3            1 BASEDATA             3ARM a h     1
+     1
+   30    56 FRISCH            1 BASEDATA             P21h a h     1
+     7
+   31    57 EPS               1 BASEDATA             XPLh a h     2
+     1     7
+   32    61 V3PUR_SH          1 BASEDATA             3PUR a h     2
+     1     7
+   33    63 IsIndivExp        1 BASEDATA             ITEX a h     1
+     1
+   34    64 EXP_ELAST         1 BASEDATA             P018 a h     1
+     1
+   35    66 EXP_ELAST_NT      1 BASEDATA             EXNT a h     0
+#READ(EXTRA)
+    5
+    1 el
+ COM          BASEDATA             COM 
+    2 el
+ IND          BASEDATA             IND 
+    3 el
+ OCC          BASEDATA             OCC 
+    4 el
+ MAR          BASEDATA             MAR 
+    5 el
+ HOU          BASEDATA             HOU 
+#NCVARIABLES
+   24
+   10 x1mar                   -1     4 s Intermediate margin demand
+    1    2    3    5
+   11 x2mar                   -1     4 s Investment margin demands
+    1    2    3    5
+   16 delV1TAX                -1     3 s Interm tax rev
+    1    2    3
+   17 delV2TAX                -1     3 s Invest tax rev
+    1    2    3
+   32 p2                      -1     3 s Purchasers price, investment
+    1    2    3
+   44 a1                      -1     3 o Intermediate basic tech change
+    1    2    3
+   53 a1oct                   -1     1 o "Other cost" ticket augmenting techncal change
+    3
+   54 a1_s                    -1     2 o Tech change, intmdiate imp/dom composite
+    1    3
+   60 pq1                     -1     2 s Price of com c produced by ind i
+    1    3
+   64 x2_s                    -1     2 s Investment use of imp/dom composite
+    1    3
+   65 p2_s                    -1     2 s Price, investment imp/dom composite
+    1    3
+   66 a2                      -1     3 o Investment basic tech change
+    1    2    3
+   70 a2_s                    -1     2 o Tech change, investment imp/dom composite
+    1    3
+   71 a3                      -1     2 o Household basic taste change
+    1    2
+  100 a1mar                   -1     4 o Intermediate margin tech change
+    1    2    3    5
+  101 a2mar                   -1     4 o Investment margin tech change
+    1    2    3    5
+  102 a3mar                   -1     3 o Household margin tech change
+    1    2    5
+  103 a4mar                   -1     2 o Export margin tech change
+    1    5
+  104 a5mar                   -1     3 o Governmnt margin tech change
+    1    2    5
+  107 t1                      -1     3 s Power of tax on intermediate
+    1    2    3
+  108 t2                      -1     3 s Power of tax on investment
+    1    2    3
+  183 f1lab                   -1     2 o Wage shift variable
+    3    4
+  184 f1lab_i                 -1     1 o Occupation-specific wage shifter
+    4
+  186 f1lab_o                 -1     1 o Industry-specific wage shifter
+    3
+#STATEMENTS
+      30   1 fl                                                 30  36    0 n
+      31   2 fl                                                 31  57    0 n
+      33   1 st COM                                             34  66    0 n
+      35   2 st SRC                                             35  41    0 n
+      36   2 st IND                                             36  66    0 n
+      37   2 st OCC                                             37  67    0 n
+      38   2 st MAR                                             38  74    0 n
+      39   1 ss                                                 39  28    0 n
+      40   1 st NONMAR                                          40  52    0 n
+      40   1 ss                                                 40  52    0 n
+      45   1 cs V1BAS                                           46  79    0 n
+      47   2 cs V2BAS                                           47  77    0 n
+      48   2 cs V3BAS                                           48  76    0 n
+      49   2 cs V4BAS                                           49  73    0 n
+      50   2 cs V5BAS                                           50  77    0 n
+      51   2 cs V6BAS                                           51  78    0 n
+      52   1 rd V1BAS                a                          53  40    0 n
+      54   2 rd V2BAS                a                          54  40    0 n
+      55   2 rd V3BAS                a                          55  40    0 n
+      56   2 rd V4BAS                a                          56  40    0 n
+      57   2 rd V5BAS                a                          57  40    0 n
+      58   2 rd V6BAS                a                          58  40    0 n
+      59   1 vr x1                                              60  78    0 n
+      61   2 vr x2                                              61  76    0 n
+      62   2 vr x3                                              62  75    0 n
+      63   2 vr x4                                              63  72    0 n
+      64   2 vr x5                                              64  76    0 n
+      65   2 vr delx6                                           65  71    0 n
+      66   2 vr p0                                              66  80    0 n
+      67   2 vr pe                                              67  78    0 n
+      68   2 vr delV6                                           68  72    0 n
+      69   1 ud V1BAS                ap                         70  70    0 n
+      71   2 ud V2BAS                ap                         71  70    0 n
+      72   2 ud V3BAS                ap                         72  68    0 n
+      73   2 ud V4BAS                ap                         73  64    0 n
+      74   2 ud V5BAS                ap                         74  68    0 n
+      75   2 ud V6BAS                ac                         75  63    0 n
+      80   1 cs V1MAR                                           82  77    0 n
+      83   2 cs V2MAR                                           84  75    0 n
+      85   2 cs V3MAR                                           85  75    0 n
+      86   2 cs V4MAR                                           86  71    0 n
+      87   2 cs V5MAR                                           87  75    0 n
+      88   1 rd V1MAR                a                          89  40    0 n
+      90   2 rd V2MAR                a                          90  40    0 n
+      91   2 rd V3MAR                a                          91  40    0 n
+      92   2 rd V4MAR                a                          92  40    0 n
+      93   2 rd V5MAR                a                          93  40    0 n
+      94   1 vr x1mar                                           96  80    0 n
+      97   2 vr x2mar                                           98  79    0 n
+      99   2 vr x3mar                                           99  78    0 n
+     100   2 vr x4mar                                          100  75    0 n
+     101   2 vr x5mar                                          101  79    0 n
+     102   2 vr p0dom                                          102  80    0 n
+     103   1 ud V1MAR                ap                        105  77    0 n
+     106   2 ud V2MAR                ap                        107  77    0 n
+     108   2 ud V3MAR                ap                        108  75    0 n
+     109   2 ud V4MAR                ap                        109  73    0 n
+     110   2 ud V5MAR                ap                        110  75    0 n
+     115   1 cs V1TAX                                          116  75    0 n
+     117   2 cs V2TAX                                          117  73    0 n
+     118   2 cs V3TAX                                          118  73    0 n
+     119   2 cs V4TAX                                          119  69    0 n
+     120   2 cs V5TAX                                          120  73    0 n
+     121   1 rd V1TAX                a                         122  40    0 n
+     123   2 rd V2TAX                a                         123  40    0 n
+     124   2 rd V3TAX                a                         124  40    0 n
+     125   2 rd V4TAX                a                         125  40    0 n
+     126   2 rd V5TAX                a                         126  40    0 n
+     127   1 vr delV1TAX                                       128  78    0 n
+     129   2 vr delV2TAX                                       129  78    0 n
+     130   2 vr delV3TAX                                       130  78    0 n
+     131   2 vr delV4TAX                                       131  78    0 n
+     132   2 vr delV5TAX                                       132  78    0 n
+     133   1 ud V1TAX                ac                        134  75    0 n
+     135   2 ud V2TAX                ac                        135  75    0 n
+     136   2 ud V3TAX                ac                        136  73    0 n
+     137   2 ud V4TAX                ac                        137  71    0 n
+     138   2 ud V5TAX                ac                        138  73    0 n
+     143   1 cs V1LAB                                          144  58    0 n
+     145   2 cs V1CAP                                          145  57    0 n
+     146   2 cs V1LND                                          146  54    0 n
+     147   2 cs V1PTX                                          147  56    0 n
+     148   2 cs V1OCT                                          148  60    0 n
+     149   1 rd V1LAB                a                         150  40    0 n
+     151   2 rd V1CAP                a                         151  40    0 n
+     152   2 rd V1LND                a                         152  40    0 n
+     153   2 rd V1PTX                a                         153  40    0 n
+     154   2 rd V1OCT                a                         154  40    0 n
+     155   1 vr x1lab                                          156  80    0 n
+     157   2 vr p1lab                                          157  75    0 n
+     158   2 vr x1cap                                          158  56    0 n
+     159   2 vr p1cap                                          159  58    0 n
+     160   2 vr x1lnd                                          160  46    0 n
+     161   2 vr p1lnd                                          161  55    0 n
+     162   2 vr delV1PTX                                       162  79    0 n
+     163   2 vr x1oct                                          163  66    0 n
+     164   2 vr p1oct                                          164  64    0 n
+     165   1 ud V1LAB                ap                        166  61    0 n
+     167   2 ud V1CAP                ap                        167  57    0 n
+     168   2 ud V1LND                ap                        168  57    0 n
+     169   1 ud V1PTX                ac                        169  51    0 n
+     170   2 ud V1OCT                ap                        170  57    0 n
+     173   1 cs V0TAR                                          173  53    0 n
+     174   1 rd V0TAR                a                         174  44    0 n
+     175   1 vr delV0TAR                                       175  80    0 n
+     176   1 ud V0TAR                ac                        176  52    0 n
+     181   1 cs V1PUR                                          182  80    0 n
+     183   2 cs V2PUR                                          183  78    0 n
+     184   2 cs V3PUR                                          184  78    0 n
+     185   2 cs V4PUR                                          185  74    0 n
+     186   2 cs V5PUR                                          186  78    0 n
+     187   1 fm                                                189  76    0 n
+     190   2 fm                                                191  76    0 n
+     192   2 fm                                                193  74    0 n
+     194   2 fm                                                195  72    0 n
+     196   2 fm                                                197  74    0 n
+     198   1 vr p1                                             199  80    0 n
+     200   2 vr p2                                             200  78    0 n
+     201   2 vr p3                                             201  77    0 n
+     202   2 vr p4                                             202  80    0 n
+     203   2 vr p5                                             203  78    0 n
+     211   1 cs SIGMA1LAB                                      212  78    0 n
+     213   2 cs V1LAB_O                                        213  62    0 n
+     214  14 cs TINY                                           214  80    0 n
+     215   1 rd SIGMA1LAB            a                         215  48    0 n
+     216   1 fm                                                217  49    0 n
+     218  14 fm                                                218  41    0 n
+     219   1 vr p1lab_o                                        220  71    0 n
+     221   2 vr x1lab_o                                        221  51    0 n
+     222   1 eq E_x1lab                                        225  68    0 n
+     226   2 eq E_p1lab_o                                      227  79    0 n
+     234   1 cs SIGMA1PRIM                                     235  75    0 n
+     236   1 rd SIGMA1PRIM           a                         236  49    0 n
+     237   1 cs V1PRIM                                         237  70    0 n
+     238   1 fm                                                238  68    0 n
+     239   1 vr p1prim                                         240  72    0 n
+     241   2 vr x1prim                                         241  53    0 n
+     242   2 vr a1lab_o                                        242  62    0 n
+     243   2 vr a1cap                                          243  64    0 n
+     244   2 vr a1lnd                                          244  61    0 n
+     245   1 vr delV1PRIM                                      245  79    0 n
+     247   1 eq E_x1lab_o                                      250  67    0 n
+     252   2 eq E_p1cap                                        254  63    0 n
+     256   2 eq E_p1lnd                                        258  63    0 n
+     260   2 eq E_p1prim                                       262  70    0 n
+     264   2 eq E_delV1PRIM                                    267  72    0 n
+     273   1 vr a1                                             274  80    0 n
+     275   2 vr x1_s                                           275  79    0 n
+     276   2 vr p1_s                                           276  79    0 n
+     277   2 vr p1mat                                          277  71    0 n
+     278   2 vr p1var                                          278  77    0 n
+     279   1 cs SIGMA1                                         280  78    0 n
+     281   2 cs V1PUR_S                                        281  75    0 n
+     282   2 cs S1                                             282  76    0 n
+     283   2 cs V1MAT                                          283  80    0 n
+     284   2 cs V1VAR                                          284  80    0 n
+     285   1 rd SIGMA1               a                         285  45    0 n
+     286   1 zd                                                286  23    0 n
+     287   1 fm                                                288  75    0 n
+     289   2 fm                                                289  78    0 n
+     290   2 fm                                                290  75    0 n
+     291   2 fm                                                291  72    0 n
+     292   1 zd                                                292  15    0 n
+     294   1 eq E_x1                                           296  79    0 n
+     298   1 eq E_p1_s                                         300  60    0 n
+     302   1 eq E_p1mat                                        304  77    0 n
+     306   1 eq E_p1var                                        308  70    0 n
+     315   1 vr x1tot                                          316  64    0 n
+     317   2 vr a1prim                                         317  73    0 n
+     318   2 vr a1tot                                          318  72    0 n
+     319   2 vr p1tot                                          319  61    0 n
+     320   2 vr a1oct                                          320  80    0 n
+     321   2 vr a1_s                                           321  80    0 n
+     323   1 eq E_x1_s                                         324  71    0 n
+     326   1 eq E_x1prim                                       327  60    0 n
+     329   1 eq E_x1oct                                        330  58    0 n
+     335   1 cs V1CST                                          336  55    0 n
+     337   2 cs V1TOT                                          337  59    0 n
+     338   2 cs PTXRATE                                        338  53    0 n
+     339   1 fm                                                340  60    0 n
+     341   2 fm                                                341  48    0 n
+     342   2 fm                                                342  46    0 n
+     343   1 wr PTXRATE              a                         343  44    0 n
+     344   1 vr delV1CST                                       345  75    0 n
+     346   2 vr delV1TOT                                       346  76    0 n
+     347   2 vr delPTXRATE                                     347  72    0 n
+     349   1 eq E_delV1CST                                     352  65    0 n
+     354   2 eq E_delV1PTX                                     355  74    0 n
+     358   2 eq E_delV1TOT                                     358  65    0 n
+     360   2 eq E_p1tot                                        360  74    0 n
+     362   1 vr p1cst                                          362  76    0 n
+     363   1 eq E_p1cst                                        368  50    0 n
+     373   1 cs MAKE                                           373  72    0 n
+     374   1 vr q1                                             375  72    0 n
+     376   2 vr pq1                                            376  72    0 n
+     377   2 vr p0com                                          377  80    0 n
+     378   1 rd MAKE                 a                         378  43    0 n
+     379   1 ud MAKE                 ap                        379  58    0 n
+     380   1 vr x0com                                          381  56    0 n
+     382   1 cs SIGMA1OUT                                      383  73    0 n
+     384   1 rd SIGMA1OUT            a                         384  48    0 n
+     385   1 eq E_q1                                           387  58    0 n
+     388   1 cs MAKE_C                                         389  56    0 n
+     390   2 cs MAKE_I                                         390  59    0 n
+     391   1 fm                                                392  47    0 n
+     393   2 fm                                                393  47    0 n
+     395   1 eq E_x1tot                                        396  67    0 n
+     401   1 eq E_pq1                                          403  44    0 n
+     404   2 eq E_x0com                                        405  66    0 n
+     429   1 vr x0dom                                          430  67    0 n
+     431   1 cs EXPSHR                                         432  51    0 n
+     433   2 cs TAU                                            433  80    0 n
+     434   1 zd                                                434  23    0 n
+     435   1 fm                                                436  44    0 n
+     437   2 fm                                                437  26    0 n
+     438   1 zd                                                438  15    0 n
+     439   1 eq E_x0dom                                        440  58    0 n
+     441   1 eq E_pe                                           442  67    0 n
+     443   1 eq E_p0com                                        444  67    0 n
+     450   1 vr x2_s                                           451  76    0 n
+     452   2 vr p2_s                                           452  76    0 n
+     453   2 vr a2                                             453  79    0 n
+     454   1 cs SIGMA2                                         455  75    0 n
+     456   1 rd SIGMA2               a                         456  45    0 n
+     457   1 cs V2PUR_S                                        458  77    0 n
+     459   2 cs S2                                             459  75    0 n
+     460   1 zd                                                460  23    0 n
+     461   1 fm                                                462  70    0 n
+     463   3 fm                                                463  77    0 n
+     464   1 zd                                                464  15    0 n
+     466   1 eq E_x2                                           468  80    0 n
+     470   1 eq E_p2_s                                         472  56    0 n
+     477   1 vr a2tot                                          478  72    0 n
+     479   2 vr p2tot                                          479  58    0 n
+     480   2 vr x2tot                                          480  63    0 n
+     481   2 vr a2_s                                           481  80    0 n
+     482   1 cs V2TOT                                          482  75    0 n
+     483   1 fm                                                483  61    0 n
+     484   1 eq E_x2_s                                         485  79    0 n
+     486   2 eq E_p2tot                                        487  79    0 n
+     493   1 vr a3                                             494  67    0 n
+     495   1 vr x3_s                                           495  73    0 n
+     496   1 vr p3_s                                           496  73    0 n
+     497   1 cs SIGMA3                                         498  73    0 n
+     499   1 rd SIGMA3               a                         499  45    0 n
+     501   1 cs V3PUR_S                                        502  70    0 n
+     503   2 cs S3                                             503  62    0 n
+     504   1 zd                                                504  23    0 n
+     505   1 fm                                                506  59    0 n
+     507   2 fm                                                507  62    0 n
+     508   1 zd                                                508  15    0 n
+     510   1 eq E_x3                                           512  68    0 n
+     514   1 eq E_p3_s                                         515  60    0 n
+     520   1 st HOU                                            520  69    0 n
+     521   1 vr p3toth                                         522  60    0 n
+     523   2 vr x3toth                                         523  66    0 n
+     524   2 vr w3toth                                         524  75    0 n
+     525   2 vr w3luxh                                         525  66    0 n
+     526   2 vr qh                                             526  60    0 n
+     527   2 vr utilityh                                       527  61    0 n
+     528   2 vr x3lux                                          528  73    0 n
+     529   2 vr x3sub                                          529  71    0 n
+     530   2 vr a3lux                                          530  75    0 n
+     531   2 vr a3sub                                          531  73    0 n
+     532   2 vr a3_s                                           532  77    0 n
+     533   2 vr x3_sh                                          533  77    0 n
+     534   1 cs V3TOTh                                         535  60    0 n
+     536  21 cs V3TOT                                          536  60    0 n
+     537   2 cs FRISCH                                         537  71    0 n
+     538   2 cs EPS                                            538  74    0 n
+     539   2 cs S3_S                                           539  71    0 n
+     540   2 cs B3LUX                                          540  80    0 n
+     541   2 cs S3LUX                                          541  72    0 n
+     542   2 cs V3PUR_SH                                       542  56    0 n
+     543   1 rd FRISCH               a                         543  47    0 n
+     544  11 rd EPS                  a                         544  47    0 n
+     545   6 rd V3PUR_SH             a                         545  47    0 n
+     546   1 ud FRISCH               ac                        546  79    0 n
+     547   2 ud V3PUR_SH             ap                        547  59    0 n
+     548   8 ud EPS                  ac                        549  63    0 n
+     550   1 fm                                                551  63    0 n
+     552  30 fm                                                552  59    0 n
+     553   2 fm                                                553  61    0 n
+     554   2 fm                                                554  61    0 n
+     556   2 fm                                                556  56    0 n
+     557   1 wr S3LUX                a                         557  45    0 n
+     558   8 wr S3_S                 a                         558  45    0 n
+     559   1 eq E_x3sub                                        561  57    0 n
+     563   2 eq E_x3lux                                        564  71    0 n
+     566   2 eq E_x3_sh                                        568  63    0 n
+     570   2 eq E_utilityh                                     571  69    0 n
+     573   2 eq E_a3lux                                        575  60    0 n
+     577   2 eq E_a3sub                                        578  79    0 n
+     580   2 eq E_x3toth                                       581  58    0 n
+     583   2 eq E_p3toth                                       584  55    0 n
+     586   2 eq E_w3toth                                       587  49    0 n
+     589   1 vr p3tot                                          590  31    0 n
+     591   1 vr x3tot                                          591  37    0 n
+     592   1 vr w3tot                                          592  46    0 n
+     593   1 eq E_x3tot                                        595  46    0 n
+     597   2 eq E_p3tot                                        598  46    0 n
+     600   2 eq E_w3tot                                        601  25    0 n
+     603   2 eq E_x3_s                                         604  72    0 n
+     606   1 cs EPSTOTH                                        606  76    0 n
+     607   1 fm                                                607  68    0 n
+     608   1 fm                                                608  62    0 n
+     612   1 fm                                                614  43    0 n
+     679   1 cs IsIndivExp                                     680  80    0 n
+     681   1 rd IsIndivExp           a                         681  49    0 n
+     683   1 st TRADEXP                                        683  79    0 n
+     683   1 fm                                                683  79    0 n
+     683   1 ss                                                683  79    0 n
+     684   1 wr (TRADEXP)            a                         684  51    0 n
+     686   1 vr phi                                            687  63    0 n
+     688   2 vr f4p                                            688  73    0 n
+     689   2 vr f4q                                            689  67    0 n
+     690   1 cs EXP_ELAST                                      691  53    0 n
+     692   1 rd EXP_ELAST            a                         692  48    0 n
+     693   1 eq E_x4A                                          694  75    0 n
+     697   1 st NTRADEXP                                       697  63    0 n
+     697   1 ss                                                697  63    0 n
+     698   1 wr (NTRADEXP)           a                         698  52    0 n
+     699   1 vr x4_ntrad                                       700  56    0 n
+     701   2 vr f4p_ntrad                                      701  67    0 n
+     702   2 vr f4q_ntrad                                      702  66    0 n
+     703   2 vr p4_ntrad                                       703  53    0 n
+     705   1 cs V4NTRADEXP                                     705  60    0 n
+     706   1 fm                                                706  51    0 n
+     708   1 eq E_X4B                                          709  44    0 n
+     711   1 eq E_p4_ntrad                                     712  66    0 n
+     714   1 cs EXP_ELAST_NT                                   714  77    0 n
+     715   1 rd EXP_ELAST_NT         a                         715  51    0 n
+     716   1 eq E_x4_ntrad                                     717  79    0 n
+     721   1 vr f5tot                                          722  54    0 n
+     723   2 vr f5tot2                                         723  42    0 n
+     724   2 vr f5                                             724  60    0 n
+     725   2 vr fx6                                            725  77    0 n
+     726   1 eq E_x5                                           727  78    0 n
+     728   2 eq E_f5tot                                        728  69    0 n
+     733   1 cs LEVP0                                          733  70    0 n
+     734   1 fm                                                734  56    0 n
+     735   1 ud LEVP0                ap                        735  53    0 n
+     736   1 eq E_delx6                                        738  61    0 n
+     739   2 eq E_delV6                                        740  63    0 n
+     745   1 vr a1mar                                          747  79    0 n
+     748   2 vr a2mar                                          749  77    0 n
+     750   2 vr a3mar                                          750  80    0 n
+     751   2 vr a4mar                                          751  78    0 n
+     752   2 vr a5mar                                          752  80    0 n
+     754   1 eq E_x1mar                                        756  46    0 n
+     757   2 eq E_x2mar                                        758  46    0 n
+     759   2 eq E_x3mar                                        760  42    0 n
+     761   2 eq E_x4mar                                        762  38    0 n
+     763   2 eq E_x5mar                                        764  42    0 n
+     769   1 cs MARSALES                                       769  73    0 n
+     770   1 fm                                                771  34    0 n
+     772   2 fm                                                774  78    0 n
+     776   1 st DEST                                           777  57    0 n
+     779   1 cs SALE                                           779  80    0 n
+     780   1 fm                                                781  75    0 n
+     782   2 fm                                                782  75    0 n
+     783   2 fm                                                783  61    0 n
+     784   2 fm                                                784  59    0 n
+     785   2 fm                                                785  52    0 n
+     786   2 fm                                                786  61    0 n
+     787   2 fm                                                787  61    0 n
+     788   2 fm                                                788  62    0 n
+     789   2 fm                                                789  52    0 n
+     790   1 wr SALE                 a                         790  41    0 n
+     792   1 cs V0IMP                                          792  73    0 n
+     793   1 fm                                                793  64    0 n
+     794   1 cs SALES                                          794  73    0 n
+     795   1 fm                                                795  64    0 n
+     796   1 cs DOMSALES                                       796  68    0 n
+     797   1 fm                                                797  58    0 n
+     802   1 vr delSale                                        803  72    0 n
+     804   1 eq E_delSaleA                                     806  58    0 n
+     807   1 eq E_delSaleB                                     808  58    0 n
+     809   1 eq E_delSaleC                                     809  80    0 n
+     810   1 eq E_delSaleD                                     810  80    0 n
+     811   1 eq E_delSaleE                                     811  65    0 n
+     812   1 eq E_delSaleF                                     812  80    0 n
+     813   1 eq E_delSaleG                                     813  80    0 n
+     814   1 eq E_delSaleH                                     817  80    0 n
+     818   1 eq E_delSaleI                                     818  65    0 n
+     819   1 eq E_delSaleJ                                     819  65    0 n
+     821   1 st LOCUSER                                        821  80    0 n
+     822   1 ss                                                822  33    0 n
+     824   1 eq E_p0A                                          825  80    0 n
+     827   1 vr x0imp                                          827  75    0 n
+     828   1 eq E_x0imp                                        829  79    0 n
+     834   1 vr t1                                             835  78    0 n
+     836   2 vr t2                                             836  76    0 n
+     837   2 vr t3                                             837  75    0 n
+     838   2 vr t4                                             838  72    0 n
+     839   2 vr t5                                             839  76    0 n
+     841   1 eq E_p1                                           845  59    0 n
+     847   1 eq E_p2                                           851  59    0 n
+     853   1 eq E_p3                                           857  55    0 n
+     859   1 eq E_p4                                           863  51    0 n
+     866   1 eq E_p5                                           870  55    0 n
+     883   1 vr f1tax_csi                                      884  75    0 n
+     885   1 vr f2tax_csi                                      885  67    0 n
+     886   1 vr f3tax_cs                                       886  72    0 n
+     887   1 vr f4tax_ntrad                                    887  75    0 n
+     888   1 vr f4tax_trad                                     888  72    0 n
+     889   1 vr f5tax_cs                                       889  73    0 n
+     890   1 vr f0tax_s                                        890  59    0 n
+     891   1 eq E_t1                                           893  73    0 n
+     894   1 eq E_t2                                           895  73    0 n
+     896   1 eq E_t3                                           897  72    0 n
+     898   1 eq E_t4A                                          899  74    0 n
+     900   1 eq E_t4B                                          901  75    0 n
+     902   1 eq E_t5                                           903  72    0 n
+     908   1 eq E_delV1TAX                                     911  48    0 n
+     912   2 eq E_delV2TAX                                     914  48    0 n
+     915   2 eq E_delV3TAX                                     917  42    0 n
+     918   2 eq E_delV4TAX                                     920  36    0 n
+     921   2 eq E_delV5TAX                                     923  42    0 n
+     933   1 vr pf0cif                                         934  65    0 n
+     935   1 vr t0imp                                          935  43    0 n
+     937   1 eq E_p0B                                          938  53    0 n
+     940   1 eq E_delV0TAR                                     941  79    0 n
+     945   1 cs V1TAX_CSI                                      946  47    0 n
+     947   2 cs V2TAX_CSI                                      947  45    0 n
+     948   2 cs V3TAX_CS                                       948  45    0 n
+     949   2 cs V4TAX_C                                        949  41    0 n
+     950   2 cs V5TAX_CS                                       950  45    0 n
+     951   2 cs V0TAR_C                                        951  37    0 n
+     952   1 fm                                                953  63    0 n
+     954   2 fm                                                954  63    0 n
+     955   2 fm                                                955  60    0 n
+     956   2 fm                                                956  57    0 n
+     957   2 fm                                                957  60    0 n
+     958   2 fm                                                958  57    0 n
+     959   1 vr delV1tax_csi                                   960  80    0 n
+     961   1 vr delV2tax_csi                                   961  78    0 n
+     962   1 vr delV3tax_cs                                    962  78    0 n
+     963   1 vr delV4tax_c                                     963  74    0 n
+     964   1 vr delV5tax_cs                                    964  78    0 n
+     965   1 vr delV0tar_c                                     965  51    0 n
+     967   1 eq E_delV1tax_csi                                 968  80    0 n
+     969   1 eq E_delV2tax_csi                                 969  80    0 n
+     970   1 eq E_delV3tax_cs                                  970  67    0 n
+     971   1 eq E_delV4tax_c                                   971  54    0 n
+     972   1 eq E_delV5tax_cs                                  972  66    0 n
+     973   1 eq E_delV0tar_c                                   973  54    0 n
+     978   1 cs V1CAP_I                                        979  42    0 n
+     980   3 cs V1LAB_IO                                       980  41    0 n
+     981   3 cs V1LND_I                                        981  39    0 n
+     982   3 cs V1PTX_I                                        982  45    0 n
+     983   3 cs V1OCT_I                                        983  49    0 n
+     984   3 cs V1PRIM_I                                       984  45    0 n
+     985   3 cs V0GDPINC                                       985  45    0 n
+     986   3 cs V0TAX_CSI                                      986  43    0 n
+     987   1 fm                                                988  35    0 n
+     989   3 fm                                                989  37    0 n
+     990   3 fm                                                990  35    0 n
+     991   3 fm                                                991  35    0 n
+     992   3 fm                                                992  35    0 n
+     993   3 fm                                                993  43    0 n
+     994   3 fm                                                995  45    0 n
+     996   3 fm                                                996  35    0 n
+     998   1 vr w1lab_io                                       999  44    0 n
+    1000   2 vr w1cap_i                                       1000  45    0 n
+    1001   2 vr w1lnd_i                                       1001  42    0 n
+    1002   2 vr w1prim_i                                      1002  49    0 n
+    1003   2 vr w1oct_i                                       1003  54    0 n
+    1004   2 vr delV1PTX_i                                    1004  80    0 n
+    1005   2 vr delV0tax_csi                                  1005  69    0 n
+    1006   2 vr w0tax_csi                                     1006  57    0 n
+    1007   2 vr w0gdpinc                                      1007  44    0 n
+    1008   1 eq E_w1lab_io                                    1010  72    0 n
+    1011   2 eq E_w1cap_i                                     1011  71    0 n
+    1012   2 eq E_w1lnd_i                                     1012  77    0 n
+    1013   2 eq E_w1prim_i                                    1013  80    0 n
+    1014   2 eq E_w1oct_i                                     1014  77    0 n
+    1015   2 eq E_delV1PTX_i                                  1015  50    0 n
+    1016   2 eq E_delV0tax_csi                                1018  51    0 n
+    1019   2 eq E_w0tax_csi                                   1019  60    0 n
+    1020   2 eq E_w0gdpinc                                    1020  71    0 n
+    1025   1 cs V0CIF                                         1026  58    0 n
+    1027   2 cs V0CIF_C                                       1027  67    0 n
+    1028   2 cs V0IMP_C                                       1028  59    0 n
+    1029   2 cs V2TOT_I                                       1029  37    0 n
+    1030   2 cs V4TOT                                         1030  36    0 n
+    1031   2 cs V5TOT                                         1031  48    0 n
+    1032   2 cs V6TOT                                         1032  41    0 n
+    1033   2 cs V0GNE                                         1033  40    0 n
+    1034   2 cs V0GDPEXP                                      1034  40    0 n
+    1035   1 fm                                               1036  44    0 n
+    1037   2 fm                                               1037  34    0 n
+    1038   2 fm                                               1038  34    0 n
+    1039   2 fm                                               1039  34    0 n
+    1040   2 fm                                               1040  34    0 n
+    1041   2 fm                                               1041  48    0 n
+    1042   2 fm                                               1042  48    0 n
+    1043   2 fm                                               1043  45    0 n
+    1044   2 fm                                               1044  37    0 n
+    1046   1 vr x2tot_i                                       1047  54    0 n
+    1048   2 vr p2tot_i                                       1048  49    0 n
+    1049   2 vr w2tot_i                                       1049  45    0 n
+    1050   1 eq E_x2tot_i                                     1051  60    0 n
+    1052   2 eq E_p2tot_i                                     1052  60    0 n
+    1053   2 eq E_w2tot_i                                     1053  40    0 n
+    1055   1 vr x4tot                                         1056  36    0 n
+    1057   2 vr p4tot                                         1057  52    0 n
+    1058   2 vr w4tot                                         1058  55    0 n
+    1059   1 eq E_x4tot                                       1060  53    0 n
+    1061   2 eq E_p4tot                                       1061  53    0 n
+    1062   2 eq E_w4tot                                       1062  34    0 n
+    1064   1 vr x5tot                                         1065  50    0 n
+    1066   2 vr p5tot                                         1066  39    0 n
+    1067   2 vr w5tot                                         1067  62    0 n
+    1068   1 eq E_x5tot                                       1069  69    0 n
+    1070   2 eq E_p5tot                                       1070  69    0 n
+    1071   2 eq E_w5tot                                       1071  34    0 n
+    1073   1 vr x6tot                                         1074  43    0 n
+    1075   2 vr p6tot                                         1075  40    0 n
+    1076   2 vr w6tot                                         1076  55    0 n
+    1077   1 eq E_x6tot                                       1078  80    0 n
+    1079   2 eq E_p6tot                                       1079  76    0 n
+    1080   2 eq E_w6tot                                       1080  34    0 n
+    1082   1 vr x0cif_c                                       1083  52    0 n
+    1084   2 vr p0cif_c                                       1084  60    0 n
+    1085   2 vr w0cif_c                                       1085  55    0 n
+    1086   1 eq E_x0cif_c                                     1087  60    0 n
+    1088   2 eq E_p0cif_c                                     1088  67    0 n
+    1089   2 eq E_w0cif_c                                     1089  40    0 n
+    1091   1 vr x0gne                                         1092  22    0 n
+    1093   2 vr p0gne                                         1093  29    0 n
+    1094   2 vr w0gne                                         1094  25    0 n
+    1095   1 eq E_x0gne                                       1096  80    0 n
+    1097   2 eq E_p0gne                                       1097  80    0 n
+    1098   2 eq E_w0gne                                       1098  31    0 n
+    1100   1 vr x0gdpexp                                      1101  47    0 n
+    1102   2 vr p0gdpexp                                      1102  50    0 n
+    1103   2 vr w0gdpexp                                      1103  50    0 n
+    1104   1 eq E_x0gdpexp                                    1106  60    0 n
+    1107   2 eq E_p0gdpexp                                    1108  60    0 n
+    1109   2 eq E_w0gdpexp                                    1109  43    0 n
+    1114   1 vr delB                                          1115  60    0 n
+    1116   8 vr x0imp_c                                       1116  58    0 n
+    1117   8 vr w0imp_c                                       1117  46    0 n
+    1118   8 vr p0imp_c                                       1118  65    0 n
+    1119   6 vr p0realdev                                     1119  36    0 n
+    1120   9 vr p0toft                                        1120  34    0 n
+    1121   1 eq E_delB                                        1122  80    0 n
+    1123   2 eq E_x0imp_c                                     1123  67    0 n
+    1124   2 eq E_p0imp_c                                     1124  70    0 n
+    1125   2 eq E_w0imp_c                                     1125  44    0 n
+    1126   2 eq E_p0toft                                      1126  42    0 n
+    1127   2 eq E_p0realdev                                   1127  46    0 n
+    1132   1 vr employ                                        1133  50    0 n
+    1134   2 vr employ_i                                      1134  56    0 n
+    1135   2 vr x1cap_i                                       1135  56    0 n
+    1136   2 vr x1lnd_i                                       1136  53    0 n
+    1137   2 vr x1prim_i                                      1137  55    0 n
+    1138   2 vr xgdpfac                                       1138  60    0 n
+    1139   2 vr p1prim_i                                      1139  37    0 n
+    1140   2 vr p1lab_io                                      1140  37    0 n
+    1141   2 vr realwage                                      1141  34    0 n
+    1142   2 vr p1cap_i                                       1142  39    0 n
+    1143   2 vr p1lnd_i                                       1143  36    0 n
+    1144   1 eq E_employ                                      1146  66    0 n
+    1147   2 eq E_employ_i                                    1147  65    0 n
+    1148   2 eq E_x1cap_i                                     1148  62    0 n
+    1149   2 eq E_x1lnd_i                                     1149  68    0 n
+    1150   2 eq E_x1prim_i                                    1150  64    0 n
+    1151   2 eq E_xgdpfac                                     1152  71    0 n
+    1153   2 eq E_p1prim_i                                    1153  64    0 n
+    1154   2 eq E_p1lab_io                                    1154  78    0 n
+    1155   2 eq E_realwage                                    1155  40    0 n
+    1156   2 eq E_p1cap_i                                     1156  62    0 n
+    1157   2 eq E_p1lnd_i                                     1157  68    0 n
+    1181   1 vr ggro                                          1182  75    0 n
+    1183   2 vr gret                                          1183  78    0 n
+    1184   1 eq E_ggro                                        1185  50    0 n
+    1186   2 eq E_gret                                        1186  50    0 n
+    1192   1 vr finv1                                         1193  66    0 n
+    1194   2 vr finv2                                         1194  66    0 n
+    1195   2 vr finv3                                         1195  62    0 n
+    1196   2 vr invslack                                      1196  77    0 n
+    1202   1 eq E_finv1                                       1203  64    0 n
+    1212   1 eq E_finv2                                       1213  43    0 n
+    1218   1 eq E_finv3                                       1219  43    0 n
+    1221   1 vr f2tot                                         1221  51    0 n
+    1222   1 eq E_f2tot                                       1222  42    0 n
+    1227   1 vr fgret                                         1228  76    0 n
+    1229  14 vr capslack                                      1229  75    0 n
+    1230   1 eq E_fgret                                       1231  43    0 n
+    1241   1 vr f1lab                                         1242  59    0 n
+    1243  13 vr f1lab_i                                       1243  72    0 n
+    1244  13 vr x1lab_i                                       1244  64    0 n
+    1245   2 vr f1lab_o                                       1245  70    0 n
+    1246  25 vr f1lab_io                                      1246  60    0 n
+    1248   1 cs V1LAB_I                                       1248  65    0 n
+    1249   1 fm                                               1249  60    0 n
+    1250   1 eq E_x1lab_i                                     1252  72    0 n
+    1254   2 eq E_p1lab                                       1256  72    0 n
+    1258   1 vr p1lab_i                                       1258  63    0 n
+    1259   1 eq E_p1lab_i                                     1260  72    0 n
+    1272   1 vr f1oct                                         1272  72    0 n
+    1273   1 eq E_p1oct                                       1274  41    0 n
+    1276   1 vr f3tot                                         1276  43    0 n
+    1277   1 eq E_f3tot                                       1278  26    0 n
+    1281   1 vr p0imp                                         1282  71    0 n
+    1283   1 eq E_p0dom                                       1284  36    0 n
+    1285   1 eq E_p0imp                                       1286  36    0 n
+    1291   1 cs INITSALES                                     1292  72    0 n
+    1293   1 fm                                               1294  47    0 n
+    1295   1 ud INITSALES            ap                       1295  43    0 n
+    1296   1 st DESTPLUS                                      1297  65    0 n
+    1298   1 ss                                               1298  34    0 n
+    1298   1 ss                                               1298  34    0 n
+    1299   1 vr SalesDecomp                                   1300  71    0 n
+    1301   1 eq E_SalesDecompA                                1303  79    0 n
+    1304   2 eq E_SalesDecompB                                1305  67    0 n
+    1310   1 st FANCAT                                        1311  41    0 n
+    1312   1 vr x0loc                                         1313  69    0 n
+    1314   1 vr fandecomp                                     1314  71    0 n
+    1315   1 cs LOCSALES                                      1315  79    0 n
+    1316   1 fm                                               1316  61    0 n
+    1318   1 eq E_x0loc                                       1320  78    0 n
+    1322   2 eq E_fandecompA                                  1323  78    0 n
+    1327   2 eq E_fandecompB                                  1328  66    0 n
+    1330   2 eq E_fandecompC                                  1332  55    0 n
+    1334   2 eq E_fandecompD                                  1335  68    0 n
+    1340   1 st EXPMAC                                        1341  65    0 n
+    1342   1 vr contGDPexp                                    1343  63    0 n
+    1344   1 cs INITGDP                                       1344  59    0 n
+    1345   1 fm                                               1345  37    0 n
+    1346   1 ud INITGDP              ap                       1346  26    0 n
+    1347   1 eq E_contGDPexpA                                 1348  65    0 n
+    1349   3 eq E_contGDPexpB                                 1349  69    0 n
+    1350   3 eq E_contGDPexpC                                 1350  65    0 n
+    1351   3 eq E_contGDPexpD                                 1351  65    0 n
+    1352   3 eq E_contGDPexpE                                 1352  65    0 n
+    1353   3 eq E_contGDPexpF                                 1353  71    0 n
+    1355   1 vr contBOT                                       1355  79    0 n
+    1356   1 eq E_contBOT                                     1356  77    0 n
+    1358   1 vr x0gdpinc                                      1359  47    0 n
+    1360   2 vr continctax                                    1360  64    0 n
+    1361   2 vr continctech                                   1361  72    0 n
+    1362   1 eq E_x0gdpinc                                    1364  67    0 n
+    1366   1 eq E_continctax                                  1374  57    0 n
+    1376   1 eq E_continctech                                 1392  41    0 n
+    1397   1 cs DIFFIND                                       1398  59    0 n
+    1399   2 cs DIFFCOM                                       1399  59    0 n
+    1400   1 fm                                               1401  48    0 n
+    1402   2 fm                                               1402  48    0 n
+    1403   1 wr DIFFIND              a                        1404  39    0 n
+    1405   2 wr DIFFCOM              a                        1405  39    0 n
+    1407   1 fm                                               1408  79    0 n
+    1409   2 fm                                               1409  79    0 n
+    1414   1 cs EXPGDP                                        1414  65    0 n
+    1415   1 fm                                               1416  31    0 n
+    1417   2 fm                                               1417  33    0 n
+    1418   2 fm                                               1418  31    0 n
+    1419   2 fm                                               1419  31    0 n
+    1420   2 fm                                               1420  31    0 n
+    1421   2 fm                                               1421  34    0 n
+    1422   1 wr EXPGDP               a                        1422  43    0 n
+    1424   1 st INCMAC                                        1425  39    0 n
+    1426   1 cs INCGDP                                        1426  60    0 n
+    1427   1 fm                                               1428  33    0 n
+    1429   2 fm                                               1429  34    0 n
+    1430   2 fm                                               1430  33    0 n
+    1431   2 fm                                               1431  35    0 n
+    1432   1 wr INCGDP               a                        1432  43    0 n
+    1434   1 st TAXMAC                                        1435  78    0 n
+    1436   1 cs TAX                                           1436  54    0 n
+    1437   1 fm                                               1438  33    0 n
+    1439   2 fm                                               1439  33    0 n
+    1440   2 fm                                               1440  32    0 n
+    1441   2 fm                                               1441  31    0 n
+    1442   2 fm                                               1442  32    0 n
+    1443   2 fm                                               1443  31    0 n
+    1444   2 fm                                               1444  31    0 n
+    1445   2 fm                                               1445  31    0 n
+    1446   1 wr TAX                  a                        1446  40    0 n
+    1451   1 st COSTCAT                                       1452  63    0 n
+    1453   1 cs COSTMAT                                       1453  70    0 n
+    1454   1 fm                                               1455  65    0 n
+    1456   2 fm                                               1456  65    0 n
+    1457   2 fm                                               1458  73    0 n
+    1459   2 fm                                               1459  73    0 n
+    1460   2 fm                                               1460  47    0 n
+    1461   2 fm                                               1461  45    0 n
+    1462   2 fm                                               1462  45    0 n
+    1463   2 fm                                               1463  45    0 n
+    1464   2 fm                                               1464  45    0 n
+    1465   1 wr COSTMAT              a                        1465  44    0 n
+    1469   1 st SALECAT2                                      1470  77    0 n
+    1471   1 st FLOWTYPE                                      1471  47    0 n
+    1472   1 cs SALEMAT2                                      1474  63    0 n
+    1475   1 fm                                               1476  77    0 n
+    1477   1 fm                                               1477  80    0 n
+    1478   1 fm                                               1478  80    0 n
+    1479   1 fm                                               1480  77    0 n
+    1481   1 fm                                               1481  80    0 n
+    1482   1 fm                                               1482  80    0 n
+    1483   1 fm                                               1484  77    0 n
+    1485   1 fm                                               1485  67    0 n
+    1486   1 fm                                               1486  67    0 n
+    1487   1 fm                                               1487  80    0 n
+    1488   1 fm                                               1488  66    0 n
+    1489   1 fm                                               1489  66    0 n
+    1490   1 fm                                               1490  79    0 n
+    1491   1 fm                                               1491  69    0 n
+    1492   1 fm                                               1492  69    0 n
+    1493   1 fm                                               1493  80    0 n
+    1494   1 fm                                               1494  67    0 n
+    1495   1 wr SALEMAT2             a                        1495  45    0 n
+    1500   1 cs IMPSHR                                        1500  72    0 n
+    1501   1 fm                                               1501  74    0 n
+    1502   1 wr IMPSHR               a                        1502  43    0 n
+    1504   1 cs SUPPLYELAST                                   1504  71    0 n
+    1505   1 zd                                               1505  23    0 n
+    1506   1 zd                                               1506  41    0 n
+    1507   1 fm                                               1508  70    0 n
+    1509   1 zd                                               1509  15    0 n
+    1510   1 zd                                               1510  33    0 n
+    1511   1 wr SUPPLYELAST          a                        1511  48    0 n
+    1513   1 st FAC                                           1513  45    0 n
+    1514   1 cs FACTOR                                        1514  72    0 n
+    1515   1 fm                                               1516  46    0 n
+    1517   2 fm                                               1517  44    0 n
+    1518   2 fm                                               1518  44    0 n
+    1519   1 wr FACTOR               a                        1519  43    0 n
+    1524   1 cs V1PUR_SI                                      1524  75    0 n
+    1525  13 cs V2PUR_SI                                      1525  73    0 n
+    1526  13 cs V5PUR_S                                       1526  73    0 n
+    1527  13 cs V6BAS_S                                       1527  61    0 n
+    1528   1 fm                                               1528  64    0 n
+    1529  13 fm                                               1529  64    0 n
+    1530  13 fm                                               1530  62    0 n
+    1531  13 fm                                               1531  62    0 n
+    1533   1 wr V1TOT                a                        1534  40    0 n
+    1535   2 wr V4PUR                a                        1535  40    0 n
+    1536   2 wr V1LAB_O              a                        1536  40    0 n
+    1537   2 wr V1PRIM               a                        1537  40    0 n
+    1538   2 wr V1PUR_SI             a                        1538  40    0 n
+    1539   2 wr V2PUR_SI             a                        1539  40    0 n
+    1540   2 wr V3PUR_S              a                        1540  40    0 n
+    1542   1 st WAGGSET                                       1551  18    0 n
+    1552   1 wr (WAGGSET)            a                        1552  50    0 n
+    1555   1 cs TARFRATE                                      1555  64    0 n
+    1556   1 fm                                               1556  64    0 n
+    1557   1 wr TARFRATE             a                        1558  41    0 n
+    1559   3 wr V0TAR                a                        1559  41    0 n
+    1560   3 wr V0CIF                a                        1560  41    0 n
+    1561   3 wr V0IMP                a                        1561  41    0 n
+    1562   3 wr MAKE                 a                        1562  41    0 n
+    1563   3 wr V1CAP                a                        1563  41    0 n
+    1564   3 wr V6BAS_S              a                        1564  41    0 n
+    1565   3 wr V2TOT                a                        1565  41    0 n
+    1566   3 wr V5PUR_S              a                        1566  41    0 n
+      -1   0 cs C00115                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00116                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00117                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00118                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00119                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00120                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00121                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00122                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00123                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00124                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00125                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00126                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00127                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00128                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00129                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00130                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00131                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00132                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00133                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00134                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00135                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00136                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00137                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00138                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00139                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00140                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00141                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00142                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00143                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00144                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00145                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00146                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00147                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00148                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00149                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00150                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00151                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00152                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00153                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00154                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00155                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00156                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00157                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00158                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00159                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00160                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00161                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00162                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00163                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00164                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00165                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00166                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00167                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00168                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00169                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00170                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00171                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00172                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00173                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00174                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00175                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00176                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00177                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00178                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00179                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00180                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00181                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00182                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00183                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00184                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00185                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00186                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00187                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00188                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00189                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00190                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00191                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00192                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00193                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00194                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00195                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00196                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00197                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00198                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00199                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00200                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00201                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00202                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00203                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00204                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00205                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00206                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00207                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00208                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00209                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00210                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00211                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00212                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00213                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00214                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00215                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00216                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00217                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00218                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00219                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00220                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00221                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00222                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00223                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00224                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00225                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 cs C00226                                           0   0    0 n
+      -1   0 fm                                                  0   0    0 n
+      -1   0 en                                                  0   0    0 n
+#GPVER
+  121004
+#PRVER
+    7000
+#FINAL_LEVEL
+ ln b x1
+ ln b x2
+ ln b x3
+ ln c x4
+ ln b x5
+ ln c delx6
+ ln c p0
+ ln c pe
+ ln b delV6
+ ln s x1mar
+ ln s x2mar
+ ln b x3mar
+ ln b x4mar
+ ln b x5mar
+ ln c p0dom
+ ln s delV1TAX
+ ln s delV2TAX
+ ln b delV3TAX
+ ln c delV4TAX
+ ln b delV5TAX
+ ln b x1lab
+ ln b p1lab
+ ln c x1cap
+ ln c p1cap
+ ln c x1lnd
+ ln c p1lnd
+ ln c delV1PTX
+ ln b x1oct
+ ln b p1oct
+ ln c delV0TAR
+ ln b p1
+ ln s p2
+ ln b p3
+ ln c p4
+ ln b p5
+ ln c p1lab_o
+ ln c x1lab_o
+ ln c p1prim
+ ln c x1prim
+ ln c a1lab_o
+ ln c a1cap
+ ln c a1lnd
+ ln c delV1PRIM
+ ln o a1
+ ln b x1_s
+ ln b p1_s
+ ln b p1mat
+ ln b p1var
+ ln c x1tot
+ ln c a1prim
+ ln c a1tot
+ ln c p1tot
+ ln o a1oct
+ ln o a1_s
+ ln c delV1CST
+ ln c delV1TOT
+ ln c delPTXRATE
+ ln b p1cst
+ ln b q1
+ ln s pq1
+ ln c p0com
+ ln c x0com
+ ln c x0dom
+ ln s x2_s
+ ln s p2_s
+ ln o a2
+ ln c a2tot
+ ln c p2tot
+ ln c x2tot
+ ln o a2_s
+ ln o a3
+ ln c x3_s
+ ln c p3_s
+ ln c p3toth
+ ln c x3toth
+ ln c w3toth
+ ln c w3luxh
+ ln c qh
+ ln c utilityh
+ ln b x3lux
+ ln b x3sub
+ ln b a3lux
+ ln b a3sub
+ ln c a3_s
+ ln c x3_sh
+ ln c p3tot
+ ln c x3tot
+ ln c w3tot
+ ln c phi
+ ln c f4p
+ ln c f4q
+ ln c x4_ntrad
+ ln c f4p_ntrad
+ ln c f4q_ntrad
+ ln c p4_ntrad
+ ln c f5tot
+ ln c f5tot2
+ ln c f5
+ ln c fx6
+ ln o a1mar
+ ln o a2mar
+ ln o a3mar
+ ln o a4mar
+ ln o a5mar
+ ln c delSale
+ ln c x0imp
+ ln s t1
+ ln s t2
+ ln b t3
+ ln c t4
+ ln b t5
+ ln c f1tax_csi
+ ln c f2tax_csi
+ ln c f3tax_cs
+ ln c f4tax_ntrad
+ ln c f4tax_trad
+ ln c f5tax_cs
+ ln c f0tax_s
+ ln c pf0cif
+ ln c t0imp
+ ln c delV1tax_csi
+ ln c delV2tax_csi
+ ln c delV3tax_cs
+ ln c delV4tax_c
+ ln c delV5tax_cs
+ ln c delV0tar_c
+ ln c w1lab_io
+ ln c w1cap_i
+ ln c w1lnd_i
+ ln c w1prim_i
+ ln c w1oct_i
+ ln c delV1PTX_i
+ ln c delV0tax_csi
+ ln c w0tax_csi
+ ln c w0gdpinc
+ ln c x2tot_i
+ ln c p2tot_i
+ ln c w2tot_i
+ ln c x4tot
+ ln c p4tot
+ ln c w4tot
+ ln c x5tot
+ ln c p5tot
+ ln c w5tot
+ ln c x6tot
+ ln c p6tot
+ ln c w6tot
+ ln c x0cif_c
+ ln c p0cif_c
+ ln c w0cif_c
+ ln c x0gne
+ ln c p0gne
+ ln c w0gne
+ ln c x0gdpexp
+ ln c p0gdpexp
+ ln c w0gdpexp
+ ln c delB
+ ln c x0imp_c
+ ln c w0imp_c
+ ln c p0imp_c
+ ln c p0realdev
+ ln c p0toft
+ ln c employ
+ ln c employ_i
+ ln c x1cap_i
+ ln c x1lnd_i
+ ln c x1prim_i
+ ln c xgdpfac
+ ln c p1prim_i
+ ln c p1lab_io
+ ln c realwage
+ ln c p1cap_i
+ ln c p1lnd_i
+ ln c ggro
+ ln c gret
+ ln c finv1
+ ln c finv2
+ ln c finv3
+ ln c invslack
+ ln c f2tot
+ ln c fgret
+ ln c capslack
+ ln o f1lab
+ ln o f1lab_i
+ ln c x1lab_i
+ ln o f1lab_o
+ ln c f1lab_io
+ ln c p1lab_i
+ ln c f1oct
+ ln c f3tot
+ ln c p0imp
+ ln c SalesDecomp
+ ln c x0loc
+ ln c fandecomp
+ ln c contGDPexp
+ ln c contBOT
+ ln c x0gdpinc
+ ln c continctax
+ ln c continctech
+#CSPSIM
+nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+nnnnnnnnnnnnnnnnnnnnnnnnnn

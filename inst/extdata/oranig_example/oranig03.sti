@@ -1,0 +1,148 @@
+!
+!   This Stored-input file is used to run TABLO to process
+!    the TABLO Input file oranig03.TAB 
+!   It carries out the standard condensation for the model.
+!
+bat      ! Run in batch mode
+
+oranig03 ! Name of TABLO Input file
+oranig03 ! same name for Information file
+c        ! condense
+o        ! Omit following variables
+a1
+a1oct
+a1mar
+a1_s
+a2
+a2mar
+a2_s
+a3
+a3mar
+a4mar
+a5mar
+f1lab
+f1lab_o
+f1lab_i
+ ! End of those to be omitted
+b          ! Backsolve
+p1         ! Variable to be substituted
+E_p1       ! Use this equation
+b          ! Backsolve (etc)
+p1lab
+E_p1lab
+s
+pq1
+E_pq1
+b
+p1_s
+E_p1_s
+s
+p2
+E_p2
+s
+p2_s
+E_p2_s
+b
+p3
+E_p3
+b
+p5
+E_p5
+b
+q1
+E_q1
+s
+t1
+E_t1
+s
+t2
+E_t2
+b
+t3
+E_t3
+b
+t5
+E_t5
+b
+x1
+E_x1
+b
+x1lab
+E_x1lab
+s
+x1mar
+E_x1mar
+b
+x1_s
+E_x1_s
+b
+x2
+E_x2
+s
+x2mar
+E_x2mar
+s
+x2_s
+E_x2_s
+b
+x3
+E_x3
+b
+x3mar
+E_x3mar
+b
+x4mar
+E_x4mar
+b
+x5
+E_x5
+b
+x5mar
+E_x5mar
+b
+x1oct
+E_x1oct
+b
+p1oct
+E_p1oct
+b
+p1var
+E_p1var
+b
+p1cst
+E_p1cst
+b
+p1mat
+E_p1mat
+b
+x3sub
+E_x3sub
+b
+x3lux
+E_x3lux
+b
+a3sub
+E_a3sub
+b
+a3lux
+E_a3lux
+s
+delV1TAX ! COM*SRC*IND
+E_delV1TAX
+s
+delV2TAX ! COM*SRC*IND
+E_delV2TAX
+b
+delV3TAX ! COM*SRC
+E_delV3TAX
+b
+delV5TAX ! COM*SRC
+E_delV5TAX
+b   !  backsolve
+delV6 ! COM*SRC
+E_delV6
+e          ! exit condensation
+a          ! code generation
+wfp        ! pgs for GEMSIM or wfp for Fortran
+
+oranig03   ! program name

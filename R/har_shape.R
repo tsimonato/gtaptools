@@ -118,7 +118,7 @@ har_shape <- function(input_data,
       input <- summarise_header(
         input_data = input$input_data,
         sets = input$sets,
-        values = input$values,
+        col_values = input$values,
         new_header_name = input$new_header_name
       )
 
@@ -218,7 +218,7 @@ har_shape <- function(input_data,
       input <- summarise_header(
         input_data = new_header,
         sets = new_c$new_sets,
-        values = "Freq",
+        col_values = "Freq",
         new_header_name = new_c$new_header
       )
 

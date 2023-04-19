@@ -7,11 +7,14 @@
 summarise_header(
   input_data,
   sets,
-  values,
+  col_values = NULL,
+  input_header = NULL,
   fun = function(x) sum(x, na.rm = T),
   new_header_name,
   export_sets = T,
-  output_har_file = NULL
+  output_har_file = NULL,
+  output_csv_file = NULL,
+  ...
 )
 }
 \arguments{
@@ -19,7 +22,9 @@ summarise_header(
 
 \item{sets}{Dimensions/columns names that contain the categorical variables for summarizing the output sets. It must be a maximum of 3 characters each.}
 
-\item{values}{Name of the variable that contains the numerical values.}
+\item{col_values}{Name of the numerical columns with the values. (only necessary when input_data is a data.frame)}
+
+\item{input_header}{Name of the reader to be read. (Only necessary when input_data is an .har file)}
 
 \item{fun}{Function used for aggregation in case of non-unique values in sets (default = sum).}
 
@@ -28,7 +33,69 @@ summarise_header(
 \item{export_sets}{If TRUE, the vectors with the set elements are incorporated with the output. If an output .har file is indicated, it will be created and exported to that .har file. If FALSE, they will not be exported.}
 
 \item{output_har_file}{Output .har file name.}
+
+\item{output_csv_file}{Output .csv file name.}
+
+\item{...}{Any additional arguments to be used to write the .csv file through data.table::fwrite, such as separator character (sep = ","), the character for decimal points (dec = "."), etc.}
+}
+\value{
+An array or vector of characters (sets) structured in a compatible way to compose a .har file.
 }
 \description{
-Summarizes a single database to a compatible format for writing to .har files.
+Summarizes a single database to an array compatible format for writing to .har files.
+}
+\examples{
+# Examples of work pipelines
+
+# -Take a data.frame as input 
+#   (Could be a path to a .har file, in which case,
+#   instead of col_values, input_header should be specified) >
+# -Aggregates the numeric variable "Freq" from 4 sets 
+#   to 3 sets (COM, SRC, MAR) by simple sum (default) >
+# -Write the new header with the name "EXAM" 
+#   in a .har file ("gtaptools_summarise_example.har") >
+# -Save the sets that compose the new header 
+#   in a separate .har file ("gtaptools_summarise_example_sets.har") >
+# -Return an array "example_df_CSM".
+
+example_df_CSM <- gtaptools::summarise_header(
+ input_data = gtaptools::example_df,
+ sets = c("COM", "SRC", "MAR"),
+ col_values = "Freq",
+ new_header_name = "EXAM",
+ export_sets = "gtaptools_summarise_example_sets.har",
+ output_har_file = "gtaptools_summarise_example.har"
+)  
+
+
+# To explore the object as a data.frame:
+as.data.frame.table(example_df_CSM$EXAM)
+
+#-Get an array as input >
+#-Aggregate from the 3 sets of the previous output
+#  to 2 sets (SRC, MAR) by simple mean >
+#-Save the new header with the name "EXAM" in a .har file
+#  ("gtaptools_summarise_example.har") and creates headers for 
+  each the set that compose it (export_sets = T, its default)>
+#-Export the data as unpivot table to a .csv file ("gtaptools_summarise_example.csv") with 
+#  separator "," (default) and decimal point "." (default).
+#-Return an array "example_df_SM".
+
+example_df_SM <- gtaptools::summarise_header(
+input_data = example_df_CSM$EXAM,
+sets = c("SRC", "MAR"),
+#col_values = "Freq",
+fun = function(x) mean(x, na.rm = T),
+new_header_name = "EXAM",
+export_sets = T,
+output_har_file = "gtaptools_summarise_example.har",
+output_csv_file = "gtaptools_summarise_example.csv",
+sep = ",",
+dec = "."
+) 
+
+# To explore the object as a data.frame:
+as.data.frame.table(example_df_SM$EXAM)
+
+
 }
