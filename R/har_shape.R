@@ -7,13 +7,72 @@ har_shape <- function(input_data,
   #'
   #' @description Allows the combination of different databases in data.frame or array format. Generate new variables flexibly from custom functions. Calculations can be performed between headers/variables of different dimensions/sets.
   #'
-  #' @param input_data It must consist of one or more input databases, which must be separated from each other by sublists (see example). In the case of multiple databases, all will be combined for the final output.
+  #'
+  #'
+  #' @param input_data It must consist of one or more input databases, which must be separated from each other by sublists (see example). In the case of multiple databases, all will be combined for the final output.Arrays and data.frames must be inside sublists (list(....)) as indicated in the examples section. Aggregations on input data can only be performed on single array and data.frame inputs.
   #' @param new_calculated_vars New variables resulting from custom calculations between the headers contained in input_data. Each variable's parameters must be informed (it can be *x, y, z ...*), the function *fun* that represents the calculation to be done, the *new_header_name*, and the *sets* for the output structure. The different headers must have at least one similar set so that it is possible to establish correspondence between them. Please note the example section.
   #' @param del_headers Vector of characters with the names of headers that must be excluded from the output.
   #' @param output_har_file Output .har file name.
   #'
   #' @importFrom HARr write_har read_har
   #' @import data.table
+  #' 
+  #' @note
+    #'Bear in mind that, for performance reasons, before carrying-out custom calculations between different Headers with different sets, the function aggregates all headers involved in the computation to the output set. That is, in a MAKE(COM, IND)/1CAP(COM) division operation, the first operation is the aggregation for MAKE(COM), and only then is the division calculation processed. 
+    #'Therefore, for example, a weighted average aggregation cannot be done directly. It is recommended to use the agg_har function in this case.
+    #'
+    #'
+  #'
+  #' 
+  #' @examples
+    #' # example code
+    #' 
+    #'# -Reads list_df, a list of input data (data.frame(1), list of arrays(2), array(3)) >
+    #'# -Aggregates the input (1) for "MAR1" in 3 sets by simple addition (default) >
+    #'# -Aggregates the input(3) for "XPLC" into 1 set per average >
+    #'# -Deletes headers "MAR1" and "3pur" >
+    #'# -Saves the output in a .har file ("gtaptools_shape_example1.har") >
+    #'# -Returns the list of "binded_df" arrays.
+    #' 
+    #' list_df <- list(
+    #'  list(
+    #'    input_data = gtaptools::example_df, # 1 - data.frame
+    #'    sets = c("COM", "SRC", "MAR"), # sum on IND
+    #'    col_values = "Freq",
+    #'  new_header_name = "MAR1"
+    #'),
+    #'gtaptools::example_arrays_har, # 2 - list of arrays
+    #'  list(
+    #'    input_data = gtaptools::example_arrays_har$xplh, # 3 - array
+    #'    sets = c("COM"), # sum in HOU,
+    #'    fun = function(x) mean(x),
+    #'    new_header_name = "XPLC"
+    #')
+    #') 
+    #' 
+    #' binded_df <-
+    #'   gtaptools::har_shape(
+    #'     input_data = list_df,
+    #'     del_headers = c("MAR1", "3pur"),
+    #'     output_har_file = "gtaptools_shape_example1.har"
+    #'   )
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
+    #' 
   #'
   #' @export
 
@@ -62,7 +121,6 @@ har_shape <- function(input_data,
   #       new_sets = c("COM", "SRC")
   #     )
   #   )
-
   #
   #   input_data <- list(
   #     input_data1,
@@ -111,22 +169,31 @@ har_shape <- function(input_data,
     input <- input_data[[l]]
 
     if (is.array(input)) {
-      stop("One or more elements of the input database list (input_data) is an array. Please insert it into a sublist and describe its new_header_name, sets, and values.")
+      stop("One or more elements of the input database list (input_data) is an array. Please insert it into a sublist and describe its new_header_name, and sets.")
     }
 
-    if (!is.null(input$input_data)) {
-      input <- summarise_header(
-        input_data = input$input_data,
-        sets = input$sets,
-        col_values = input$values,
-        new_header_name = input$new_header_name
-      )
+    if (length(input) == 1) {
+      if ((is.character(input[[1]]) & grepl("*.har", input[[1]]))) {
+        input <- HARr::read_har(input[[1]], toLowerCase = F, useCoefficientsAsNames = T)
 
-      input_har_diff <- base::setdiff(names(input_har), names(input))
-      input_har <- c(input_har[input_har_diff], input)
-    } else {
-      input_har_diff <- base::setdiff(names(input_har), names(input))
-      input_har <- c(input_har[input_har_diff], input)
+        input_har_diff <- base::setdiff(names(input_har), names(input))
+        input_har <- c(input_har[input_har_diff], input)
+      }
+    } else if (!substr( names(input)[1], 1, 2) == "XX") {
+      if (!is.null(input$input_data)) {
+        input <- summarise_header(
+          input_data = input$input_data,
+          sets = input$sets,
+          col_values = input$col_values,
+          fun = ifelse(is.null(input$fun), function(x) sum(x, na.rm = T), input$fun),
+          new_header_name = input$new_header_name
+        )
+        input_har_diff <- base::setdiff(names(input_har), names(input))
+        input_har <- c(input_har[input_har_diff], input)
+      } else {
+        input_har_diff <- base::setdiff(names(input_har), names(input))
+        input_har <- c(input_har[input_har_diff], input)
+      }
     }
   }
   #   if (!is.null(input$data)) {
@@ -162,90 +229,49 @@ har_shape <- function(input_data,
 
   # l <- 1
 
-
+v=4
   if (!is.null(new_calculated_vars)) {
-    for (l in 1:length(new_calculated_vars)) {
-      new_c <- new_calculated_vars[[l]]
-
-      vars_fun <- !names(new_c) %in% c("fun", "new_header", "new_sets")
-      vars_fun <- unlist(new_c[vars_fun])
-
-      # v <- 3
-      new_h <- c()
-      for (v in 1:length(vars_fun)) {
-        new_h[[v]] <- as.data.frame.table(input_har[[vars_fun[v]]])
-        new_h[[v]][vars_fun[v]] <- as.numeric(new_h[[v]]$Freq)
-        new_h[[v]]$Freq <- NULL
-
-        cols_sum <- names(new_h[[v]])[names(new_h[[v]]) %in% c(new_c$new_sets)]
-        new_h[[v]] <- new_h[[v]][c(cols_sum, vars_fun[v])]
-        # new_h[[v]] <- data.table::as.data.table(new_h[[v]])
-        new_h[[v]] <- data.table::setDT(new_h[[v]])[, lapply(.SD, base::sum), by = cols_sum]
-        new_h[[v]] <- as.data.frame(new_h[[v]])
-
-        if (v == 1) {
-          new_h_merged <- new_h[[v]]
+    for (v in 1:length(new_calculated_vars)) {
+      
+        expr <- new_calculated_vars[[v]][[3]]
+        result_calc <- with(input_har, eval(expr))
+        
+        if (is.character(result_calc)){
+          
+          new_header_name <- new_calculated_vars[[v]][[2]]
+          input_har[[new_header_name]] <- NULL
+          input_har[[new_header_name]] <- result_calc
+          
         } else {
-          cols <- names(new_h_merged) %in% names(new_h[[v]])
-          cols <- names(new_h_merged)[cols]
-          new_h_merged <- data.table::setDT(new_h_merged)
-          new_h[[v]] <- data.table::setDT(new_h[[v]])
-          new_h_merged <- data.table::merge.data.table(new_h_merged, new_h[[v]], all = TRUE, by = cols)
-          new_h_merged <- as.data.frame(new_h_merged)
-
-          # new_h_merged <- dplyr::full_join(new_h_merged, new_h[[v]], relationship = "many-to-many")
+        if (length(new_calculated_vars[[v]][[2]])==1){
+          
+          new_h <- new_calculated_vars[[v]][[2]]
+          stop(paste0("New Header and its sets were not properly described: ",
+                      new_h ,
+                      '. Please, describe it in a format: new_header_name[c("its sets")].'))
         }
-      }
-
-      new_header <- data.table::setDT(new_h_merged)[,
-        .(
-          Freq =
-            do.call(
-              new_c$fun,
-              lapply(vars_fun, function(x) get(x))
-            )
-        ),
-        by = c(new_c$new_sets)
-      ]
-
-      new_header <- as.data.frame(new_header)
-
-      # new_header <- new_h_merged |>
-      #   dplyr::group_by(dplyr::across(new_c$new_sets)) |>
-      #   dplyr::summarise(Freq = do.call(new_c$fun, rlang::syms(vars_fun))) |>
-      #   as.data.frame()
-
-      input <- summarise_header(
-        input_data = new_header,
-        sets = new_c$new_sets,
-        col_values = "Freq",
-        new_header_name = new_c$new_header
-      )
-
-
-      input_har <- c(input_har, input)
-
-
-      # dim_info <- new_header |>
-      #   dplyr::select(dplyr::any_of(new_c$new_sets))
-      # dim <- sapply(dim_info, function(x) length(unique(x)))
-      # dimnam <- sapply(dim_info, function(x) unique(x))
-      # if (!is.list(dimnam)) {
-      #   dimnam <- as.list(as.data.frame(dimnam))
-      # }
-      #
-      # new_header <- array(
-      #   data = new_header$Freq,
-      #   dim = dim,
-      #   dimnames = dimnam
-      # )
-      #
-      # input_har[[new_c$new_header]] <- new_header
+        
+        sets <- new_calculated_vars[[v]][[2]][[3]]
+        
+        
+        if(is.null(dimnames(result_calc))) {
+          result_calc <- as.array(result_calc)
+          names(dimnames(result_calc)) <- eval(sets)
+        } else {
+          result_calc <- apply(result_calc, eval(sets), sum)
+        }
+        
+    
+        
+        new_header_name <- new_calculated_vars[[v]][[2]][[2]]
+        input_har[[new_header_name]] <- NULL
+        input_har[[new_header_name]] <- result_calc
+}
     }
-  }
+    }
 
-  if (!is.null(del_header)) {
-    input_har <- input_har[!names(input_har) %in% del_header]
+  if (!is.null(del_headers)) {
+    input_har <- input_har[!names(input_har) %in% del_headers]
   }
 
 
