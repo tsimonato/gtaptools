@@ -30,8 +30,7 @@ summarise_header <- function(input_data,
   #' @import data.table
   #'
   #' @examples
-  #' # Examples of work pipelines
-  #'
+  #' 
   #'# -Take a data.frame as input 
   #'#   (Could be a path to a .har file, in which case,
   #'#   instead of col_values, input_header should be specified) >
@@ -208,20 +207,20 @@ summarise_header <- function(input_data,
   # # input <- input_data1$BSMR
   #
   # df_data <- input$data
-  if (!(is.data.frame(input_data) | is.array(input_data))) {
+  if (!(is.data.frame(input_data) | is.array(input_data) | is.list(input_data))) {
     if (is.character(input_data) & grepl("*.har", input_data)) {
-      input_data <- HARr::read_har(input_data)[[tolower(header)]]
+      input_data <- HARr::read_har(input_data, toLowerCase = F)#[[tolower(header)]]
       col_values <- "Freq"
     } else {
       stop("Input_data must be a data.frame, array or a path to a .har file.")
     }
   }
 
-  sets <- tolower(sets)
+  #sets <- tolower(sets)
 
   summ_header <- function(input_data,
                           sets,
-                          values,
+                          col_values,
                           new_header_name,
                           fun = function(x) sum(x, na.rm = T)) {
     if (!(is.data.frame(input_data) | is.array(input_data) | is.character(input_data))) {
@@ -234,7 +233,6 @@ summarise_header <- function(input_data,
 
     if (is.array(input_data)) {
       input_data <- as.data.frame.table(input_data)
-      col_values <- ifelse(is.null(col_values), "Freq", col_values)
     }
 
     test <- !c(sets, col_values) %in% names(input_data)
@@ -243,7 +241,8 @@ summarise_header <- function(input_data,
       stop(paste0(new_header_name, ": The ", paste0(cols_null, collapse = ", "), " columns indicated in the sets and/or values parameters are not found in the input database."))
     }
 
-
+    
+    col_values <- ifelse(is.null(col_values), "Freq", col_values)
 
     df_data <- as.data.frame(input_data)
     df_data <- df_data[c(sets, col_values)]
@@ -283,7 +282,7 @@ summarise_header <- function(input_data,
 
     input_har <- summ_header(input_data,
       sets = sets,
-      values = col_values,
+      col_values = col_values,
       new_header_name = new_header_name,
       fun = fun
     )

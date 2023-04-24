@@ -164,7 +164,7 @@ har_shape <- function(input_data,
 
   # convert to df_har
   # input <- c()
-  l <- 1
+  
   input_har <- c()
   for (l in 1:length(input_data)) {
     input <- input_data[[l]]
@@ -198,7 +198,7 @@ har_shape <- function(input_data,
     }
   }
 
-  v <- 1
+  
   if (!is.null(new_calculated_vars)) {
     for (v in 1:length(new_calculated_vars)) {
       expr <- new_calculated_vars[[v]][[3]]
