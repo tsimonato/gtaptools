@@ -45,7 +45,6 @@ An array or vector of characters (sets) structured in a compatible way to compos
 Summarizes a single database to an array compatible format for writing to .har files.
 }
 \examples{
-# Examples of work pipelines
 
 # -Take a data.frame as input 
 #   (Could be a path to a .har file, in which case,

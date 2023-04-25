@@ -1,6 +1,7 @@
 har_shape <- function(input_data,
                       new_calculated_vars = NULL,
                       del_headers = NULL,
+                      export_sets = NULL,
                       output_har_file = NULL) {
   #' @name har_shape
   #' @title Merge and generate new headers.
@@ -12,6 +13,7 @@ har_shape <- function(input_data,
   #' @param input_data It must consist of one or more input databases, which must be separated from each other by sublists (see example). In the case of multiple databases, all will be combined for the final output.Arrays and data.frames must be inside sublists (list(....)) as indicated in the examples section. Aggregations on input data can only be performed on single array and data.frame inputs.
   #' @param new_calculated_vars New variables resulting from custom calculations between the headers contained in input_data. Each variable's parameters must be informed (it can be *x, y, z ...*), the function *fun* that represents the calculation to be done, the *new_header_name*, and the *sets* for the output structure. The different headers must have at least one similar set so that it is possible to establish correspondence between them. Please note the example section.
   #' @param del_headers Vector of characters with the names of headers that must be excluded from the output.
+  #' @param export_sets If an output .har file is indicated, it will be created and exported to that .har file. If FALSE, they will not be exported.
   #' @param output_har_file Output .har file name.
   #'
   #' @importFrom HARr write_har read_har
@@ -243,6 +245,16 @@ har_shape <- function(input_data,
 
   if (!is.null(del_headers)) {
     input_har <- input_har[!names(input_har) %in% del_headers]
+  }
+  
+  if (is.character(export_sets)) {
+    
+    sets <- lapply(input_har, function(x) dimnames(x))
+    sets <- unlist(sets, recursive=FALSE)
+    names(sets) <- substr(names(sets), nchar(names(sets))-2, nchar(names(sets)))
+    sets <- sets[unique(names(sets))]
+
+    HARr::write_har(sets, filename = export_sets)
   }
 
 
