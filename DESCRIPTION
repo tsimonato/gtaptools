@@ -10,8 +10,9 @@ LazyData: true
 Depends: 
     R (>= 3.1)
 Imports:
-    data.table (>= 1.14.8)
+    data.table (>= 1.14.8),
+    HARr
 Remotes:
-    github::usda-ers/mted-harr
+    github::USDA-ERS/MTED-HARr/
 RoxygenNote: 7.2.3
 License: GPL (>= 3)
