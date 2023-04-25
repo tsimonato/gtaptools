@@ -10,7 +10,7 @@ LazyData: true
 Depends: 
     R (>= 3.1)
 Imports:
-    dplyr
+    data.table (>= 1.14.8)
 Remotes:
     github::USDA-ERS/MTED-HARr
 RoxygenNote: 7.2.3
