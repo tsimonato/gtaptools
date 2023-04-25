@@ -12,6 +12,6 @@ Depends:
 Imports:
     data.table (>= 1.14.8)
 Remotes:
-    github::USDA-ERS/MTED-HARr
+    github::usda-ers/mted-harr
 RoxygenNote: 7.2.3
 License: GPL (>= 3)
