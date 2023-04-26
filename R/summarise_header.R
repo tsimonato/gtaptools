@@ -1,9 +1,6 @@
 summarise_header <- function(input_data,
-                             sets,
-                             col_values = NULL,
-                             input_header = NULL,
+                             header,
                              fun = function(x) sum(x, na.rm = T),
-                             new_header_name,
                              export_sets = T,
                              output_har_file = NULL,
                              output_csv_file = NULL,
@@ -14,12 +11,9 @@ summarise_header <- function(input_data,
   #' @description Summarizes a single database to an array compatible format for writing to .har files.
   #'
   #' @param input_data An array that has the output structure of the read_har function or a data.frame.
-  #' @param sets Dimensions/columns names that contain the categorical variables for summarizing the output sets. It must be a maximum of 3 characters each.
-  #' @param col_values Name of the numerical columns with the values. (only necessary when input_data is a data.frame)
-  #' @param input_header Name of the reader to be read. (Only necessary when input_data is an .har file)
-  #' @param fun Function used for aggregation in case of non-unique values in sets (default = sum).
-  #' @param new_header_name Name of the new header created.
+  #' @param header Must be adopted the format header_name[c("its sets")], where the header_name must be the same name of the numeric values column in case of a data.frame input_data, and the "its sets" must be the same name of the categorical columns of that data.frame. Please check the examples section and the package's online manual for more details.
   #' @param export_sets If TRUE, the vectors with the set elements are incorporated with the output. If an output .har file is indicated, it will be created and exported to that .har file. If FALSE, they will not be exported.
+  #' @param fun Function used for aggregation in case of non-unique values in sets (default = sum).
   #' @param output_har_file Output .har file name.
   #' @param output_csv_file Output .csv file name.
   #' @param ... Any additional arguments to be used to write the .csv file through data.table::fwrite, such as separator character (sep = ","), the character for decimal points (dec = "."), etc.
@@ -30,42 +24,42 @@ summarise_header <- function(input_data,
   #' @import data.table
   #'
   #' @examples
-  #' 
-  #'# -Take a data.frame as input 
-  #'#   (Could be a path to a .har file, in which case,
-  #'#   instead of col_values, input_header should be specified) >
-  #'# -Aggregates the numeric variable "Freq" from 4 sets 
-  #'#   to 3 sets (COM, SRC, MAR) by simple sum (default) >
-  #'# -Write the new header with the name "EXAM" 
-  #'#   in a .har file ("gtaptools_summarise_example.har") >
-  #'# -Save the sets that compose the new header 
-  #'#   in a separate .har file ("gtaptools_summarise_example_sets.har") >
-  #'# -Return an array "example_df_CSM".
   #'
-  #'example_df_CSM <- gtaptools::summarise_header(
+  #' # -Take a data.frame as input
+  #' #   (Could be a path to a .har file, in which case,
+  #' #   instead of col_values, input_header should be specified) >
+  #' # -Aggregates the numeric variable "Freq" from 4 sets
+  #' #   to 3 sets (COM, SRC, MAR) by simple sum (default) >
+  #' # -Write the new header with the name "EXAM"
+  #' #   in a .har file ("gtaptools_summarise_example.har") >
+  #' # -Save the sets that compose the new header
+  #' #   in a separate .har file ("gtaptools_summarise_example_sets.har") >
+  #' # -Return an array "example_df_CSM".
+  #'
+  #' example_df_CSM <- gtaptools::summarise_header(
   #'  input_data = gtaptools::example_df,
   #'  sets = c("COM", "SRC", "MAR"),
   #'  col_values = "Freq",
   #'  new_header_name = "EXAM",
   #'  export_sets = "gtaptools_summarise_example_sets.har",
   #'  output_har_file = "gtaptools_summarise_example.har"
-  #')  
+  #' )
   #'
   #'
-  #'# To explore the object as a data.frame:
-  #'as.data.frame.table(example_df_CSM$EXAM)
+  #' # To explore the object as a data.frame:
+  #' as.data.frame.table(example_df_CSM$EXAM)
   #'
-  #'#-Get an array as input >
-  #'#-Aggregate from the 3 sets of the previous output
-  #'#  to 2 sets (SRC, MAR) by simple mean >
-  #'#-Save the new header with the name "EXAM" in a .har file
-  #'#  ("gtaptools_summarise_example.har") and creates headers for 
+  #' #-Get an array as input >
+  #' #-Aggregate from the 3 sets of the previous output
+  #' #  to 2 sets (SRC, MAR) by simple mean >
+  #' #-Save the new header with the name "EXAM" in a .har file
+  #' #  ("gtaptools_summarise_example.har") and creates headers for
   #'   each the set that compose it (export_sets = T, its default)>
-  #'#-Export the data as unpivot table to a .csv file ("gtaptools_summarise_example.csv") with 
-  #'#  separator "," (default) and decimal point "." (default).
-  #'#-Return an array "example_df_SM".
+  #' #-Export the data as unpivot table to a .csv file ("gtaptools_summarise_example.csv") with
+  #' #  separator "," (default) and decimal point "." (default).
+  #' #-Return an array "example_df_SM".
   #'
-  #'example_df_SM <- gtaptools::summarise_header(
+  #' example_df_SM <- gtaptools::summarise_header(
   #' input_data = example_df_CSM$EXAM,
   #' sets = c("SRC", "MAR"),
   #' #col_values = "Freq",
@@ -76,11 +70,11 @@ summarise_header <- function(input_data,
   #' output_csv_file = "gtaptools_summarise_example.csv",
   #' sep = ",",
   #' dec = "."
-  #' ) 
-  #' 
+  #' )
+  #'
   #' # To explore the object as a data.frame:
   #' as.data.frame.table(example_df_SM$EXAM)
-  #' 
+  #'
   #'
   #' @export
   #
@@ -207,41 +201,50 @@ summarise_header <- function(input_data,
   # # input <- input_data1$BSMR
   #
   # df_data <- input$data
+
+  sets <- eval(header[[3]])
+  col_values <- as.character(header[[2]])
+  new_header_name <- col_values
+
   if (!(is.data.frame(input_data) | is.array(input_data) | is.list(input_data))) {
     if (is.character(input_data) & grepl("*.har", input_data)) {
-      input_data <- HARr::read_har(input_data, toLowerCase = F)#[[tolower(header)]]
+      input_data <- HARr::read_har(input_data, toLowerCase = F) # [[tolower(header)]]
       col_values <- "Freq"
     } else {
       stop("Input_data must be a data.frame, array or a path to a .har file.")
     }
   }
 
-  #sets <- tolower(sets)
+  # sets <- tolower(sets)
 
   summ_header <- function(input_data,
-                          sets,
-                          col_values,
-                          new_header_name,
+                          header = header,
                           fun = function(x) sum(x, na.rm = T)) {
+    sets <- eval(header[[3]])
+    col_values <- as.character(header[[2]])
+    new_header_name <- col_values
+
     if (!(is.data.frame(input_data) | is.array(input_data) | is.character(input_data))) {
       stop("The input data is not a data.frame, array or a vector of characters (sets).")
     }
 
-    if (nchar(new_header_name) > 4) {
+    if (nchar(col_values) > 4) {
       stop("The name of the new header must have up to 4 characters.")
     }
 
     if (is.array(input_data)) {
       input_data <- as.data.frame.table(input_data)
+      col_values <- "Freq"
     }
+
 
     test <- !c(sets, col_values) %in% names(input_data)
     if (any(test)) {
       cols_null <- c(sets, col_values)[test]
-      stop(paste0(new_header_name, ": The ", paste0(cols_null, collapse = ", "), " columns indicated in the sets and/or values parameters are not found in the input database."))
+      stop(paste0(col_values, ": The ", paste0(cols_null, collapse = ", "), " columns indicated in the sets and/or values parameters are not found in the input database."))
     }
 
-    
+
     col_values <- ifelse(is.null(col_values), "Freq", col_values)
 
     df_data <- as.data.frame(input_data)
@@ -276,14 +279,12 @@ summarise_header <- function(input_data,
 
   input_har <- c()
   if (!is.character(input_data)) {
-    if (is.array(input_data)) {
-      col_values <- ifelse(is.null(col_values), "Freq", col_values)
-    }
+    # if (is.array(input_data)) {
+    #   col_values <- ifelse(is.null(col_values), "Freq", col_values)
+    # }
 
     input_har <- summ_header(input_data,
-      sets = sets,
-      col_values = col_values,
-      new_header_name = new_header_name,
+      header = header,
       fun = fun
     )
 
@@ -319,5 +320,3 @@ summarise_header <- function(input_data,
 
   return(input_har)
 }
-  
-  
