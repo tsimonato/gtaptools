@@ -36,56 +36,8 @@ An array or vector of characters (sets) structured in a compatible way to compos
 Summarizes a single database to an array compatible format for writing to .har files.
 }
 \examples{
+# example code
 
-# -Take a data.frame as input
-#   (Could be a path to a .har file, in which case,
-#   instead of col_values, input_header should be specified) >
-# -Aggregates the numeric variable "Freq" from 4 sets
-#   to 3 sets (COM, SRC, MAR) by simple sum (default) >
-# -Write the new header with the name "EXAM"
-#   in a .har file ("gtaptools_summarise_example.har") >
-# -Save the sets that compose the new header
-#   in a separate .har file ("gtaptools_summarise_example_sets.har") >
-# -Return an array "example_df_CSM".
-
-example_df_CSM <- gtaptools::summarise_header(
- input_data = gtaptools::example_df,
- sets = c("COM", "SRC", "MAR"),
- col_values = "Freq",
- new_header_name = "EXAM",
- export_sets = "gtaptools_summarise_example_sets.har",
- output_har_file = "gtaptools_summarise_example.har"
-)
-
-
-# To explore the object as a data.frame:
-as.data.frame.table(example_df_CSM$EXAM)
-
-#-Get an array as input >
-#-Aggregate from the 3 sets of the previous output
-#  to 2 sets (SRC, MAR) by simple mean >
-#-Save the new header with the name "EXAM" in a .har file
-#  ("gtaptools_summarise_example.har") and creates headers for
-  each the set that compose it (export_sets = T, its default)>
-#-Export the data as unpivot table to a .csv file ("gtaptools_summarise_example.csv") with
-#  separator "," (default) and decimal point "." (default).
-#-Return an array "example_df_SM".
-
-example_df_SM <- gtaptools::summarise_header(
-input_data = example_df_CSM$EXAM,
-sets = c("SRC", "MAR"),
-#col_values = "Freq",
-fun = function(x) mean(x, na.rm = T),
-new_header_name = "EXAM",
-export_sets = T,
-output_har_file = "gtaptools_summarise_example.har",
-output_csv_file = "gtaptools_summarise_example.csv",
-sep = ",",
-dec = "."
-)
-
-# To explore the object as a data.frame:
-as.data.frame.table(example_df_SM$EXAM)
 
 
 }
