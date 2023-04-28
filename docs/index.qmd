@@ -88,7 +88,7 @@ visualizing CGE model data, but increase the learning curve.
 
 The package also includes functions for data cleaning, manipulation, and
 visualization that can be used with other data format, like R
-[data.frames](https://rstudio.github.io/r-manuals/r-intro/Lists-and-data-frames.html) and [arrays](https://rstudio.github.io/r-manuals/r-intro/Arrays-and-matrices.html). Also, although GEMPACK is only compatible with
+data.frame and array. Also, although GEMPACK is only compatible with
 Windows OS, the package's features work on other OS supported by R and
 Rstudio such as Linux and MacOS.
 
@@ -112,7 +112,7 @@ functions has a familiar format for GEMPACK users.
 #### gtaptools::har_shape
 
 The *har_shape* is a highly efficient and valuable tool for
-binding databases and modifying headers in data.frame or array format.
+binding databases and modifying headers in [data.frames](https://rstudio.github.io/r-manuals/r-intro/Lists-and-data-frames.html) or [arrays](https://rstudio.github.io/r-manuals/r-intro/Arrays-and-matrices.html) format.
 This function lets users combine various databases quickly and easily
 while generating new variables using custom calculations. This function
 is especially useful for integrating *.har* databases with other bases
@@ -120,7 +120,7 @@ in the R environment, providing a versatile solution for analysts who
 need to work with different classes of datasets.
 
 ::: {.callout-note title="What this tool does:"}
--   Read and combines *.har* files, arrays and dataframes.
+-   Read and combines *.har* files, [arrays](https://rstudio.github.io/r-manuals/r-intro/Arrays-and-matrices.html) and [data.frames](https://rstudio.github.io/r-manuals/r-intro/Lists-and-data-frames.html).
 -   Create/change headers from calculations.
 -   Write headers to disk.
 :::
