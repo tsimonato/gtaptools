@@ -52,12 +52,64 @@ devtools::install_github("tsimonato/gtaptools")
 This is a basic usage example:
 
 ``` r
-library(gtaptools)
-## basic example code
-squeeze_sim(cmf_file = "data/test/teste/termdyn_hou.cmf",
-            zip_file = "new_sim.zip")
-#> The file run_termdyn_hou.bat was created. You can run it later to compile the model and run the simulation if you have Gempack software installed on your machine.
-#> The simulation files have been squeezed to new_sim.zip
+
+path_to_har <- gtaptools::templates("oranig_example.har")
+
+ input_data <- list(
+    path_to_har # Path to .har database
+ )
+
+new_calculated_vars <- list(
+   quote(MARC["COM"] := `1MAR`), # Sum 1MAR to set COM
+   quote(MULT[c("REG", "HOU")] := solve(MAKE)), # Solve the MAKE matrix
+   quote(NSET := c("Comm1", "Comm2")) # Create sets
+)
+
+output_har_r <- 
+  gtaptools::har_shape(
+    input_data = input_data,
+    new_calculated_vars = new_calculated_vars, 
+    del_headers = c("1LND"),
+    export_sets = "gtaptools_shape_example2_sets.har", 
+    output_har_file = "gtaptools_shape_example2.har"
+)
+#> 1BAS with maxsize 1e+05
+#> 3BAS with maxsize 1e+05
+#> 4BAS with maxsize 1e+05
+#> 5BAS with maxsize 1e+05
+#> 6BAS with maxsize 1e+05
+#> 1MAR with maxsize 1e+05
+#> 3MAR with maxsize 1e+05
+#> 4MAR with maxsize 1e+05
+#> 5MAR with maxsize 1e+05
+#> 1TAX with maxsize 1e+05
+#> 3TAX with maxsize 1e+05
+#> 4TAX with maxsize 1e+05
+#> 5TAX with maxsize 1e+05
+#> 1LAB with maxsize 1e+05
+#> 1PTX with maxsize 1e+05
+#> 1OCT with maxsize 1e+05
+#> 0TAR with maxsize 1e+05
+#> SLAB with maxsize 1e+05
+#> P028 with maxsize 1e+05
+#> 1ARM with maxsize 1e+05
+#> MAKE with maxsize 1e+05
+#> SCET with maxsize 1e+05
+#> 2ARM with maxsize 1e+05
+#> 3ARM with maxsize 1e+05
+#> ITEX with maxsize 1e+05
+#> P018 with maxsize 1e+05
+#> LCOM with maxsize 1e+05
+#> 1CAP with maxsize 1e+05
+#> 2BAS with maxsize 1e+05
+#> 2MAR with maxsize 1e+05
+#> 2TAX with maxsize 1e+05
+#> XPLH with maxsize 1e+05
+#> 3PUR with maxsize 1e+05
+#> P21H with maxsize 1e+05
+#> EXNT with maxsize 1e+05
+#> MARC with maxsize 1e+05
+#> MULT with maxsize 1e+05
 ```
 
 ## References

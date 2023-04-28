@@ -322,12 +322,7 @@ The POL data.frame stores the policy values in monetary units. We can then calcu
 #| eval: true
 #| message: false
 
-
-new_calculated_vars <- list( 
-  quote(SHOC[c("YEAR", "HOU")] := 100*(POL/(apply(`3PUR`, "HOU", sum)*1e6))) # <1>
-)
-
-input_data <- list( # <2>
+input_data <- list( # <1>
   list(
   input_data = POL, # Data.frame 
   header = quote(POL[c("YEAR", "HOU")])
@@ -336,6 +331,10 @@ list(
   input_data = input_har$`3PUR`, # Array
   header = quote(`3PUR`[c("COM", "HOU")])
 )
+)
+
+new_calculated_vars <- list( 
+  quote(SHOC[c("YEAR", "HOU")] := 100*(POL/(apply(`3PUR`, "HOU", sum)*1e6))) # <2>
 )
 
 output_har <- 
@@ -350,8 +349,8 @@ DT::datatable(as.data.frame.table(output_har$SHOC))
 
 ```
 
-1. Defines the calculation of the shock. Note that `3PUR` is being "pre-aggregated" for HOU and is being multiplied by `1e6` due to the monetary unit adopted in the Brazilian Input-Output Matrix.
-2. Creates a list composed by the data.frame POL and 3PUR of the original *.har* base.
+1. Creates a list composed by the data.frame POL and 3PUR of the original *.har* base.
+2. Defines the calculation of the shock. Note that `3PUR` is being "pre-aggregated" for HOU and is being multiplied by `1e6` due to the monetary unit adopted in the Brazilian Input-Output Matrix.
 3. Run the calculations and save the file *gtaptools_shape_example_shock.har*. Check the SHOC produced:
 
 

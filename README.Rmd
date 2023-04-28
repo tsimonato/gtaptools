@@ -41,11 +41,27 @@ devtools::install_github("tsimonato/gtaptools")
 This is a basic usage example:
 
 ```{r example}
-library(gtaptools)
-## basic example code
-squeeze_sim(cmf_file = "data/test/teste/termdyn_hou.cmf",
-            zip_file = "new_sim.zip")
 
+path_to_har <- gtaptools::templates("oranig_example.har")
+
+ input_data <- list(
+    path_to_har # Path to .har database
+ )
+
+new_calculated_vars <- list(
+   quote(MARC["COM"] := `1MAR`), # Sum 1MAR to set COM
+   quote(MULT[c("REG", "HOU")] := solve(MAKE)), # Solve the MAKE matrix
+   quote(NSET := c("Comm1", "Comm2")) # Create sets
+)
+
+output_har_r <- 
+  gtaptools::har_shape(
+    input_data = input_data,
+    new_calculated_vars = new_calculated_vars, 
+    del_headers = c("1LND"),
+    export_sets = "gtaptools_shape_example2_sets.har", 
+    output_har_file = "gtaptools_shape_example2.har"
+)
 
 ```
 
