@@ -284,7 +284,7 @@ In the calculation in (1), the chunk `apply(MAKE, c("COM"), sum)` simply aggrega
 Notice that the IFMA header was created and used as an input in the following formula. It is possible due to the sequential way the calculations are processed in the tool. Therefore, it is necessary to follow this sequence: create > use as input.
 
 
-Another practical example is the calculation of shocks relating the *.har* base to external data for use as [shock *.har* file in RunDynam](https://www.copsmodels.com/gpmanual.htm#rdynshoks). Let's assume we have information on an increase in household consumption in monetary terms of 70 million for H01 households and 50 million for H02 households. We can mount a data.frame that represents this economic policy as follows:
+Another practical example is the calculation of shocks relating the *.har* base to external data for use as [shock *.har* file in RunDynam](https://www.copsmodels.com/gpmanual.htm#rdynshoks). Let's assume we have information on an increase in household consumption in monetary terms of 70 billion for H01 households and 50 billion for H02 households. We can mount a data.frame that represents this economic policy as follows:
 
 ```{r}
 #| label: har_shape5
@@ -304,7 +304,7 @@ POL <-  expand.grid(HOU = set_hou, # <2>
                      YEAR = set_years)
 
 POL$POL <- 0
-POL[POL$YEAR == "Y2015", "POL"] <- c(70000, 50000, 0, 0, 0, 0, 0, 0, 0, 0) # <3>
+POL[POL$YEAR == "Y2015", "POL"] <- c(70e9, 50e9, 0, 0, 0, 0, 0, 0, 0, 0) # <3>
 
 DT::datatable(POL)
 
@@ -324,7 +324,7 @@ The POL data.frame stores the policy values in monetary units. We can then calcu
 
 
 new_calculated_vars <- list( 
-  quote(SHOC[c("YEAR", "HOU")] := (POL/apply(`3PUR`, "HOU", sum))*100) # <1>
+  quote(SHOC[c("YEAR", "HOU")] := 100*(POL/(apply(`3PUR`, "HOU", sum)*1e6))) # <1>
 )
 
 input_data <- list( # <2>
@@ -350,9 +350,11 @@ DT::datatable(as.data.frame.table(output_har$SHOC))
 
 ```
 
-1. Defines the calculation of the shock. Note that `3PUR` is being "pre-aggregated" for HOU.
+1. Defines the calculation of the shock. Note that `3PUR` is being "pre-aggregated" for HOU and is being multiplied by 1e6 due to the monetary unit adopted in the Brazilian Input-Output Matrix.
 2. Creates a list composed by the data.frame POL and 3PUR of the original *.har* base.
 3. Run the calculations and save the file *gtaptools_shape_example_shock.har*. Check the SHOC produced:
+
+
 
 ## Data viz
 
