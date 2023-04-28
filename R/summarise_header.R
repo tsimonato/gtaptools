@@ -215,7 +215,7 @@ summarise_header <- function(input_data,
       dimnam <- as.list(as.data.frame(dimnam))
     }
 
-    if (any(nchar(names(dim)) > 3)) {
+    if (any(nchar(names(dim)) > 3) & !any(names(dim) == "YEAR")) {
       stop("Set names must be up to 3 characters.")
     }
 
