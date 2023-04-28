@@ -34,7 +34,7 @@ the [HARr](https://github.com/USDA-ERS/MTED-HARr) and
     Analysis.](https://www.gtap.agecon.purdue.edu/resources/download/10028.pdf)
 
 The *gtaptools* package is designed to be user-friendly and is
-accompanied by detailed [documentation](https://github.com/tsimonato/gtaptools/manual/gtaptools_0.1.0.pdf) and example code built-in that can
+accompanied by detailed [documentation](https://github.com/tsimonato/gtaptools/raw/master/manual/gtaptools_0.1.0.pdf) and example code built-in that can
 be explored in Rstudio. We hope that this manual will serve as an
 auxiliary practical support to users and welcome community feedback and
 contributions.
