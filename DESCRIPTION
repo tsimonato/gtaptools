@@ -1,6 +1,6 @@
 Package: gtaptools
 Type: Package
-Title: A set of tools to improve the productivity of CGE modelers.
+Title: A set of tools to improve the productivity of CGE modelers
 Version: 0.1.0
 Authors@R: person("Thiago", "Simonato", email = "tsimonato@purdue.edu",
                   role = c("aut", "cre"))
