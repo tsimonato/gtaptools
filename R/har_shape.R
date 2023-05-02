@@ -213,7 +213,16 @@ har_shape <- function(input_data,
   if (!is.null(new_calculated_vars)) {
     for (v in 1:length(new_calculated_vars)) {
       expr <- new_calculated_vars[[v]][[3]]
-      result_calc <- with(input_har, eval(expr))
+      
+      dim_adj <- function(x) {
+        if (is.array(x) & length(dim(x)) == 1) {
+          x <- c(x)
+        }
+        return(x)
+      }
+      input_har_1_dim_adj <- lapply(input_har, dim_adj)
+      
+      result_calc <- with(input_har_1_dim_adj, eval(expr))
 
       if (is.character(result_calc)) {
         new_header_name <- new_calculated_vars[[v]][[2]]

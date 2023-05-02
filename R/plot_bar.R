@@ -1,84 +1,169 @@
-# plot_bar <- function(variables) {
-#   
-#   
-# 
-#   
-#   
-#   library(ggplot2)
-#   
-#   create_bar_plot <- function(data, y_col, x_col, facet_col, fill_col, palette_name, legend_title) {
-#     
-#     ggplot(data, aes(x = {{x_col}}, y = {{y_col}}, fill = {{fill_col}})) +
-#       geom_bar(stat = "identity") +
-#       labs(x = deparse(substitute(x_col)),
-#            y = deparse(substitute(y_col)),
-#            fill = legend_title) +
-#       scale_fill_brewer(palette = palette_name, name = legend_title) +
-#       facet_wrap(~ eval(facet_col), ncol = 1)
-#     
-#   }
-#   
-#   # Create example data
-#   df <- data.frame(x = c("A", "B", "C", "D"),
-#                    y = c(10, 20, 30, 40),
-#                    fill_col = c("red", "green", "blue", "orange"),
-#                    facet_col = rep(c("group1", "group2"), 2))
-#   
-#   # Create the plot
-#   create_bar_plot(
-#     data = df,
-#     y_col = y,
-#     x_col = x,
-#     facet_col = facet_col,
-#     fill_col = fill_col,
-#     palette_name = "Set1",
-#     legend_title = "Color Category"
-#   )
-#   
-#   
-#   
-# }
+plot_bars <- function(input_data,
+                      x,
+                      x_label = NULL,
+                      y,
+                      y_label = NULL,
+                      fill = NULL,
+                      facet = NULL,
+                      facet_n_row = NULL,
+                      facet_scales = NULL,
+                      palette = 1,
+                      orientation_bars = "vertical",
+                      rotate_x_labels = 90,
+                      legend_title = NULL,
+                      legend_pos = "bottom",
+                      reactive = T,
+                      gtap_theme = "A") {
+  #' @name plot_bars
+  #' @title Bar graphs
+  #'
+  #' @description Plot static and reactive bar charts.
+  #'
+  #' @param input_data It must consist of one or more input databases, which must be separated from each other by sublists (see example). In the case of multiple databases, all will be combined for the final output.Arrays and data.frames must be inside sublists (list(....)) as indicated in the examples section. Aggregations on input data can only be performed on single array and data.frame inputs.
+  #' @param x the name of the variable to be plotted on the x-axis.
+  #' @param x_label the label to be used for the x-axis (default is x).
+  #' @param y The name of the variable to be plotted on the y-axis.
+  #' @param y_label the label to be used for the x-axis (default is y).
+  #' @param fill the name of the variable to be used for stacking the bars, if any (default is NULL)
+  #' @param facet the name of the variable to be used for faceting the graph, if any (default is NULL)
+  #' @param palette the name of the color palette to be used. Can be specified by name or number from 1 to about 15 (default is 1).
+  #' @param orientation_bars the orientation of the bars to be plotted, "h" to horizontal or "v" to vertical (default is "v").
+  #' @param rotate_x_labels the angle in degrees to rotate the x-axis labels (default is 90)
+  #' @param legend_title the title to be used for the legend (default is fill).
+  #' @param legend_pos the position to be used for the legend ("bottom", "left" or "right"), default is "bottom".
+  #' @param reactive Plot reactive (default = T).
+  #' @param gtap_theme the gtap template theme. Can be specified from 1 to about 5 (default is 1).
+  #'
+  #' @import ggplot2
+  #' 
+  #' @importFrom plotly ggplotly layout
+  #'
+  #' @export
 
 
-# 
-# path_to_har <- gtaptools::templates("oranig_example.har")
-# 
-# input_data <- HARr::read_har(path_to_har, toLowerCase = F)
-# 
-# input_data <- as.data.frame.table(input_data$`1MAR`)
-# 
-# input_data <- input_data |> 
-#   dplyr::filter(COM %in% c("Agriculture", "Livestock", "Extractive"))
-# 
-# 
-# 
-# library(ggplot2)
-# 
-# create_stacked_bar_plot <- function(data, y_col, x_col, facet_col, stack_col, palette_name, legend_title) {
-#   
-#   ggplot(data, aes(x = {{x_col}}, y = {{y_col}}, fill = {{stack_col}})) +
-#     geom_bar(stat = "identity", position = "stack") +
-#     labs(x = deparse(substitute(x_col)),
-#          y = deparse(substitute(y_col)),
-#          fill = legend_title) +
-#     scale_fill_brewer(palette = palette_name, name = legend_title) +
-#     facet_wrap(vars({{facet_col}}))
-#   
-# }
-# 
-# 
-# 
-# # Create example data
-# df <- data.frame(x = c("A", "B", "B", "A"),
-#                  y = c(10, 20, 30, 40),
-#                  stack_col = rep(c("group1", "group2"), 2),
-#                  facet_col = rep(c("category1", "category2"), 2))
-# 
-# # Create the plot
-# create_stacked_bar_plot(df, y_col = y, x_col = x, facet_col = facet_col, stack_col = stack_col, 
-#                         palette_name = "Set1", legend_title = "Stack Category")
-# 
-# 
-# create_stacked_bar_plot(input_data, y = Freq, x = MAR,  facet_col = SRC, stack_col = COM,
-#                         palette_name = "Set1", legend_title = "KK")
+
+  # Check input_data class
+  if (is.array(input_data)) {
+    input_data <- as.data.frame.table(input_data)
+  } else if (!(is.array(input_data) | is.data.frame(input_data))) {
+    stop("input_data must be an array or a data.frame.")
+  }
+
+  # Check if y and x variables exist in data
+  if (!(y %in% colnames(input_data)) | !(x %in% colnames(input_data))) {
+    stop("y or x variable is not present in the data.")
+  }
+
+  # Fill arg
+  if (!is.null(fill)) {
+    if (!(fill %in% colnames(input_data))) {
+      stop("`fill` variable is not present in the data.")
+    }
+    plot <- ggplot2::ggplot(
+      input_data,
+      ggplot2::aes_string(
+        x = x,
+        y = y,
+        fill = fill
+      )
+    ) +
+      ggplot2::geom_col(position = "stack")
+  } else {
+    plot <- ggplot2::ggplot(
+      input_data,
+      ggplot2::aes(
+        x = {{x}},
+        y = {{y}}
+      )
+    ) +
+      ggplot2::geom_bar(stat = "identity")
+  }
+
+  # orientation_bars arg
+  if (!is.null(orientation_bars)) {
+    if (tolower(orientation_bars) %in% c("v", "vertical")) {
+      plot <- plot
+    } else if (tolower(orientation_bars) %in% c("h", "horizontal")) {
+      plot <- plot + ggplot2::coord_flip(expand = T)
+    } else {
+      stop('"orientation_bars" must be = "H" or "V".')
+    }
+  }
+
+  # Facet arg
+  if (!is.null(facet)) {
+    if (!(facet %in% colnames(input_data))) {
+      stop("`facet` variable is not present in the data.")
+    }
+    facet_n_row <- ifelse(!is.null(facet_n_row), facet_n_row, 1)
+    facet_scales <- ifelse(!is.null(facet_scales), , "fixed")
+    plot <- plot + ggplot2::facet_wrap(facet,
+      scales = facet_scales
+    )
+  }
+
+  # palette arg
+  if (!is.null(palette)) {
+    plot <- plot + ggplot2::scale_fill_brewer(palette = palette)
+  }
+
+  # x_label arg
+  if (!is.null(x_label)) {
+    plot <- plot + ggplot2::xlab(x_label)
+  }
+
+  # y_label arg
+  if (!is.null(y_label)) {
+    plot <- plot + ggplot2::ylab(y_label)
+  }
+
+  # legend_title arg
+  if (!is.null(legend_title)) {
+    plot <- plot + ggplot2::labs(fill = legend_title)
+  }
+
+  # legend_pos arg
+  if (!is.null(legend_pos)) {
+    plot <- plot + ggplot2::theme(legend.position = legend_pos)
+  }
+
+  # rotate_x_labels arg
+  if (is.null(rotate_x_labels)) {
+    n_char <- sum(nchar(as.character(unique(input_data[x])[[1]])))
+    n_facet <- ifelse(!is.null(facet), nrow(unique(input_data[facet])), 1)
+    n_row_facet <- ifelse(!is.null(facet_n_row), facet_n_row, 1)
+    n_col <- n_facet / n_row_facet
+    rotate_x_labels <- ifelse(n_char * n_col > 25, 90, 0)
+  }
+  plot <- plot +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(
+      angle = rotate_x_labels,
+      vjust = 0.5,
+      hjust = 1
+    ))
+  
+  # Set font family
+  plot <- plot + 
+    ggplot2::theme(text=ggplot2::element_text(family="serif"))
+
+  # reactive arg
+  if (reactive) {
+    if (!is.null(legend_pos)) {
+      if (tolower(legend_pos) == "bottom") {
+        plot <- plotly::ggplotly(plot) |>
+          plotly::layout(legend = list(orientation = "h"))
+      }
+    } else {
+      plot <- plotly::ggplotly(plot)
+    }
+  }
+
+  plot
+
+  return(plot)
+}
+
+
+
+
 

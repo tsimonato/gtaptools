@@ -11,7 +11,9 @@ Depends:
     R (>= 3.1)
 Imports:
     data.table (>= 1.14.8),
-    HARr
+    HARr,
+    ggplot2,
+    plotly
 Remotes:
     github::USDA-ERS/MTED-HARr
 RoxygenNote: 7.2.3

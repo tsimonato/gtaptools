@@ -34,7 +34,7 @@ templates <- function(file) {
 
 
   files <- list.files(system.file("extdata", package = "gtaptools"), recursive = T)
-  file <- grep(file, files)
+  file <- grep(tolower(file), tolower(files))
 
   path <-
     file.path(system.file("extdata", package = "gtaptools"), files[file])

@@ -106,7 +106,7 @@ In this section, the tools that manipulate the databases are displayed.
 Its structure has a simple design, and the syntax adopted for the custom
 functions has a familiar format for GEMPACK users.
 
-### -gtaptools::har_shape
+### - gtaptools::har_shape
 
 The `har_shape` is a efficient and valuable tool for
 binding databases and modifying headers in arrays or data.frames format.
@@ -136,7 +136,8 @@ Let's assume we want the following:
 ```{r}
 #| label: har_shape1
 #| echo: true
-#| eval: false
+#| eval: true
+#| message: false
 
 path_to_har <- gtaptools::templates("oranig_example.har")
 
@@ -167,10 +168,10 @@ Header names that start with digits, like **1**MAR, must be enclosed in `` to be
 :::
 
 ::: callout-warning
-The data.frames and arrays used as input (1) must contain columns with
+The arrays and data.frames used as input (like `gtaptools::example_df` in (1)) must contain columns with
 names that correspond to the mentioned sets and, in the case of
-data.frames, the column with the numerical values of the data frame must
-have the name of the header that will be generated (`1MAR` in this
+data.frames, the column with the numerical values in the data.frame must
+have the same name of the header that will be generated (`1MAR` in this
 example).
 :::
 
@@ -180,6 +181,7 @@ Therefore, to generate `1MAR[c("COM", "SRC", "MAR")]` the data.frame used has co
 #| label: har_shape2
 #| echo: true
 #| eval: true
+#| message: false
 
 DT::datatable(gtaptools::example_df[1:20,])
 
@@ -191,7 +193,9 @@ Now let's assume another scenario.
 ```{r}
 #| label: har_shape3
 #| echo: true
-#| eval: false
+#| eval: true
+#| message: false
+
 
 path_to_har <- gtaptools::templates("oranig_example.har")
 
@@ -201,7 +205,8 @@ path_to_har <- gtaptools::templates("oranig_example.har")
 
 new_calculated_vars <- list( # <2>
    quote(MARC["COM"] := `1MAR`), # Sum 1MAR to set COM
-   quote(MULT[c("REG", "HOU")] := solve(MAKE)), # Solve the MAKE matrix
+   quote(MACM[c("COM")] := apply(`1MAR`, c("COM"), mean, na.rm = T)),
+   quote(MULT[c("COM", "IND")] := solve(MAKE)), # Solve the MAKE matrix
    quote(NSET := c("Comm1", "Comm2")) # Create sets
 )
 
@@ -217,22 +222,23 @@ output_har_r <-
 ```
 
 1.  Reads a *.har* from disk as input.
-2.  Generates the `MARC` header, the aggregation by sum to COM of `1MAR`.
+2.  Generates the `MARC` and `MACM` header, the aggregation by sum (default) and by mean to COM of `1MAR`.
     Generates `MULT`, with `"REG"` and `"HOU"` sets, which is the inverse matrix
     of the `MAKE` header. Creates set header `NSET` consisting of "Comm1" and
     "Comm2" elements.
 3.  Deletes the `1LND` header. Saves sets and numeric headers in different
     files.
+    
+`MACM` is the aggregation by mean of `1MAR`. So, to aggregate by a function other than sum, the section `apply(1MAR, c("COM"), mean))` was applied, which can be interpreted as an aggregation of `1MAR` to `"COM" ` applying the `mean` function. Note that there is still the `na.rm=T` argument which would not be necessary, it is just to show how other parameters of the aggregation function (`mean` in this case) could be specified.
 
 ::: callout-caution
-Note the syntax adopted in the formulas. Properly using 
-`:=` (and not `=` ), `[ ]`, `c("Set1", "Set2", ...)` in case of more than one set, and encapsulating the formula inside `quote( )` is
-indispensable.
+Note the syntax adopted in the formulas. It is indispensable to properly use 
+`:=` (and not `=` ), `[ ]`, `c("Set1", "Set2", ...)` in case of more than one set, and encapsulating the formula inside `quote( )`.
 :::
 
 The aggregation performed on `MARC["COM"] := 1MAR` is defined by the set indicated for the output header. Since the `1MAR` header is composed of 4 sets (`"COM"`, `"SRC"`, `"IND"`, `"MAR"`) and the output is composed of only 1 (`"COM"`), the tool automatically aggregates the output to `COM.`
 
-Calculations are being done between arrays in this tool, and R offers a vast range of possibilities for [manipulating arrays](https://rstudio.github.io/r-manuals/r-intro/Arrays-and-matrices.html). It can be applied, for example, *if* statements and intermediate aggregation of sets as commonly adopted in GEMPACK scripts.
+Calculations are being done between arrays in this tool, and R offers a vast range of possibilities for [manipulating arrays](https://rstudio.github.io/r-manuals/r-intro/Arrays-and-matrices.html). It can be applied, for example, *if* statements and intermediate aggregations of sets as commonly adopted in GEMPACK scripts.
 
 ```{r}
 #| label: har_shape4
@@ -247,12 +253,12 @@ path_to_har <- gtaptools::templates("oranig_example.har")
  )
 
 new_calculated_vars <- list( 
-   quote(SHRM[c("COM", "IND")] := MAKE/apply(MAKE, c("COM"), sum)), # <2>
-   quote(IFMA[c("COM", "IND")] := MAKE + ifelse(MAKE > 10, MAKE*2, MAKE)), # <3>
-   quote(IFMS[c("COM")] := apply(IFMA, c("COM"), mean)) # <4>
+   quote(SHMA[c("COM", "IND")] := MAKE / apply(MAKE, c("COM"), sum)), # <2>
+   quote(SH3B[c("COM", "SRC")] := `3BAS` / ifelse(apply(`3BAS`, c("COM"), sum)==0, 1, apply(`3BAS`, c("COM"), sum))), # <3>
+   quote(IF3B[c("COM", "SRC")] := `3BAS` + ifelse(`SH3B` > 0.95, `5TAX`, 0)) # <4>
 )
 
-output_har_r <- 
+output_har <- 
   gtaptools::har_shape(
     input_data = input_data,
     new_calculated_vars = new_calculated_vars, 
@@ -261,38 +267,42 @@ output_har_r <-
     output_har_file = "gtaptools_shape_example3.har"
 )
 
-
 ```
 
 1. Reads a *.har* from disk as input.
-2. Creates `SHRM` which is the share of `MAKE` by `"COM"`.
-3. Creates `IFMA` which is the `MAKE` multiplied by `2` if its value is `> 10`.
-4. Creates `IFMS` which is the aggregation by mean of `IFMA` for `"COM"`.
+2. Creates `SHMA` which is the share of `MAKE` by `"COM"`.
+3. Creates `SH3B` which is the share of `3BAS` in `"COM"` with conditional for division by zero.
+4. Creates `IF3B` which is `3BAS` added to `5TAX` if `SH3B > 0.95`.
 5. Saves the output *.har* file and does not include the sets in it. (`"export_sets = F"`).
 
-In the calculation in (1), the chunk `apply(MAKE, c("COM"), sum)` simply aggregates by sum the `MAKE` to `"COM"`, while in (3) `apply(IFMA, c("COM"), mean)` aggregates by mean `IFMA` to `"COM"`.
+To apply conditions on division by zero we can adopt `ifelse`statements. In (2), in the case of division by zero (`apply(3BAS, c("COM"), sum) == 0`) the value `1` is adopted in the denominator, and `apply(3BAS, c("COM"), sum)` otherwise.
 
-Notice that the `IFMA` header was created and used as an input in the following formula. It is possible due to the sequential way the calculations are processed in the tool. Therefore, it is necessary to follow this sequence: create > use as input.
+It is also possible to adopt cross-references, as in (4). where `3BAS` is added to `5TAX` only if `SH3B > 0.95`.
 
-Also, arrays converted to data.frame through `as.data.frame.table()` have "Freq" as the name of the column of numerical values. Keep this in mind when using this type of conversion.
+::: callout-caution
+Note that the `SH3B` header was created and used as an input in the following formula. It is possible due to the sequential way the calculations are processed in the tool. Therefore, it is necessary to follow this sequence: create the header > use it as input.
+:::
 
-Check the the data headers created that are being writed to `"gtaptools_shape_example3.har"`:
+Check the the data headers created that are being written to `"gtaptools_shape_example3.har"`:
 
 ::: panel-tabset
-## `SHRM`
+## `SHMA`
 ```{r}
-DT::datatable(as.data.frame.table(output_har_r$SHRM))
+DT::datatable(as.data.frame.table(output_har$SHMA))
 ```
-## `IFMA`
+## `SH3B`
 ```{r}
-DT::datatable(as.data.frame.table(output_har_r$IFMA))
+DT::datatable(as.data.frame.table(output_har$SH3B))
 ```
-## `IFMS`
+## `IF3B`
 ```{r}
-DT::datatable(as.data.frame.table(output_har_r$IFMS))
+DT::datatable(as.data.frame.table(output_har$IF3B))
 ```
 :::
 
+::: callout-warning
+Arrays converted to data.frame through `as.data.frame.table()` function have "Freq" as the name of the column of numerical values. Keep this in mind when using this type of conversion.
+:::
 
 Another practical example is the calculation of shocks relating the *.har* base to external data for use as [shock input file in RunDynam](https://www.copsmodels.com/gpmanual.htm#rdynshoks). Let's assume we have information on an increase in household consumption in monetary terms of 70 billion for `H01` households and 50 billion for `H02` households. Let`s build a data.frame to fit this economic policy:
 
@@ -354,11 +364,10 @@ output_har <-
     output_har_file = "gtaptools_shape_example_shock.har"
   )
 
-
 ```
 
 1. Creates a list composed by the data.frame `POL` and `3PUR` of the original *.har* base.
-2. Defines the calculation of the shock. Note that `3PUR` is being "pre-aggregated" to `"HOU"` in `apply(3PUR, "HOU", sum)`, and is being multiplied by `1e6` due to the monetary unit adopted in the [Brazilian Input-Output Matrix](https://www.ibge.gov.br/en/statistics/economic/national-accounts/16940-input-output-matrix.html?=&t=o-que-e) used to calibrate this model.
+2. Defines the calculation of the shock. Note that `3PUR` is being "pre-aggregated" to `"HOU"` in `apply(3PUR, "HOU", sum)`, and is being multiplied by `1e6` due to the monetary unit adopted in the [Brazilian Input-Output Matrix](https://www.ibge.gov.br/en/statistics/economic/national-accounts/16940-input-output-matrix.html?=&t=o-que-e) used to calibrate this CGE database.
 3. Run the calculations and write the file `"gtaptools_shape_example_shock.har"`. 
 Check the data headers on this output file:
 
@@ -377,16 +386,74 @@ DT::datatable(as.data.frame.table(output_har$POL))
 ```
 :::
 
-### -gtaptools::agg_har
+### - gtaptools::agg_har
 
 
 
 
 ## Data viz
 
-### Static
+### Non-spatial data
 
-### Reactive
+#### - gtaptools::plot_bars
+
+`plot_bars` plots bar graphs using ggplot2 and plotly R packages. This tool can be used for creating static and reactive bar charts. `input_data` is the data frame containing the data that will be plotted, where each column is a variable, and each row is an observation. `x` and `y` are the names of the variables to be plotted on the x and y axes, respectively. `x_label` and `y_label` are the labels for the x and y axes, respectively. `fill` is the variable to be used for stacking the bars. `facet` is the variable to be used for faceting the graph. `palette` is the name or number of the color palette to be used. `orientation_bars` is the orientation of the bars to be plotted, which can be either "horizontal" or "vertical". `rotate_x_labels` is the angle in degrees to rotate the x-axis labels. `legend_title` is the title to be used for the legend, and `legend_pos` is the position to be used for the legend. `gtap_theme` is the template theme to be used.
+
+Check out some usage examples:
+
+::: panel-tabset
+## Reactive
+```{r}
+#| echo: true
+#| eval: true
+#| message: false
+
+path_to_har <- gtaptools::templates("gtap_example.har")
+input_data <- gtaptools::har_shape(path_to_har)
+
+
+gtaptools::plot_bars(
+  input_data = input_data$EVFB,
+  x = "REG",
+  x_label = "Regions",
+  y = "Freq",
+  y_label = "Primary factor purshases (US$)",
+  fill = "ENDW",
+  facet = "ACTS",
+  legend_title = "Endowments"
+)
+
+
+```
+## Static
+```{r}
+#| echo: true
+#| eval: true
+#| message: false
+
+path_to_har <- gtaptools::templates("gtap_example.har")
+input_data <- gtaptools::har_shape(path_to_har)
+
+
+gtaptools::plot_bars(
+  input_data = input_data$EVFB,
+  x = "REG",
+  x_label = "Regions",
+  y = "Freq",
+  y_label = "Primary factor purshases (US$)",
+  fill = "ENDW",
+  facet = "ACTS",
+  legend_title = "Endowments",
+  reactive = F
+)
+
+
+```
+:::
+
+
+
+### Spatial data
 
 ## Report automation
 
@@ -402,124 +469,3 @@ DT::datatable(as.data.frame.table(output_har$POL))
 
 # References
 
-
-
-```{r}
-#| label: sh
-#| echo: true
-#| eval: true
-say_hello <- function(name) {
-    paste("Hello,", name, "!") # <1>
-}
-
-say_hello("world") # <2>
-```
-
-1.  Quite an original example.
-2.  This is were all the action is happening.
-
-### Verbatim
-
-Here is the structure of the `penguins` dataset.
-
-```{r}
-#| label: penguins_str
-#| echo: true
-library(palmerpenguins)
-str(penguins)
-```
-
-### Tables
-
-Sample table output.
-
-```{r}
-#| label: table
-tab <- table(penguins$island, penguins$species)
-kable(tab)
-```
-
-Sample `DT:datatable` output.
-
-```{r}
-#| label: dt
-library(DT)
-DT::datatable(penguins)
-```
-
-# Styling
-
-A simple list :
-
--   one mississipi
--   two mississipi
--   three mississipi
-
-A blockquote :
-
-> Oh ! What a nice blockquote you have here. Much more wonderful than a
-> classical lorem ipsum, really.
-
-And we could also [include links](https://www.r-project.org/) or simply
-URLs like this : <https://www.r-project.org/>.
-
-An incredibly complex equation :
-
-$$ y = \sqrt{\frac{1}{x + \beta}} $$
-
-# Figures
-
-Here is an histogram.
-
-```{r}
-#| label: hist
-library(ggplot2)
-ggplot(data = penguins) +
-    geom_histogram(aes(x = body_mass_g)) +
-    facet_grid(rows = vars(species))
-```
-
-And a wonderful scatterplot, with a caption.
-
-```{r}
-#| label: scatter
-#| fig.cap: "This is a scatterplot"
-ggplot(data = penguins) +
-    geom_point(
-        aes(x = bill_length_mm, y = bill_depth_mm)
-    )
-```
-
-# Callouts
-
-::: callout-note
-This is a note callout.
-:::
-
-::: callout-warning
-This is a warning callout
-:::
-
-::: callout-important
-This is an important callout
-:::
-
-::: callout-caution
-This is a caution callout
-:::
-
-::: callout-tip
-This is a tip callout.With a bit of `code`.
-:::
-
-# Tabset
-
-::: panel-tabset
-## First tab
-
-This is the first tab content.
-
-## Second tab
-
-This is the second tab content.
-:::

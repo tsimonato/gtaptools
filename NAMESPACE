@@ -2,9 +2,13 @@
 
 export(agg_har)
 export(har_shape)
+export(plot_bars)
 export(squeeze_sim)
 export(summarise_header)
 export(templates)
 import(data.table)
+import(ggplot2)
 importFrom(HARr,read_har)
 importFrom(HARr,write_har)
+importFrom(plotly,ggplotly)
+importFrom(plotly,layout)
