@@ -457,7 +457,7 @@ gtaptools::plot_bars(
 
 ## Report automation
 
-# Putting it all together to
+# Applying the tools to
 
 ## GTAP
 
