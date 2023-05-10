@@ -20,18 +20,18 @@ har_shape <- function(input_data,
   #' @note
   #'
   #' 1. The calculations indicated in the new_calculated_vars variable are processed sequentially. Therefore, if the calculation for generating a new header depends on another header that will also be generated within new_calculated_vars, the second one must be defined first.
-  #' 
+  #'
   #' 2. Ensure that the .har files adopted as input_data have an adequate structure, including the declaration of sets for each file header. It prevents the output_har_file from being recorded with errors that make it impossible for the file to be opened by the Viewhar software later.
   #'
   #' @examples
   #' # example code
   #'
-  #' # - The list_df is composed by list_df, a list of input data 
+  #' # - The list_df is composed by list_df, a list of input data
   #' #    (path to a .har database(1), data.frame(2), list of arrays(3), array(4)).
-  #' 
+  #'
   #' path_to_har <- gtaptools::templates("oranig_example.har")
   #'
-  #'list_db <- list(
+  #' list_db <- list(
   #'   path_to_har, # 1 - path to .har database
   #'   list(
   #'     input_data = gtaptools::example_df, # 2 - data.frame
@@ -43,23 +43,23 @@ har_shape <- function(input_data,
   #'     header = quote(`XPLH`[c("COM", "HOU")])
   #'   )
   #' )
-  #' 
-  #' # - calcs defines the calculations that aggregate (1), 
+  #'
+  #' # - calcs defines the calculations that aggregate (1),
   #' #    solve a matrix (2) and create a header (3).
-  #' 
+  #'
   #' calcs <- list(
   #'   quote(MARC["COM"] := `1MAR`), # Sums to set COM
   #'   quote(MULT[c("REG", "HOU")] := solve(MAKE)), # Solves the matrix
   #'   quote(NSET := c("Comm1", "Comm2")) # Creates sets
   #' )
-  #' 
-  #' 
-  #' # - new_binded_db is a list object that combines the databases 
+  #'
+  #'
+  #' # - new_binded_db is a list object that combines the databases
   #' #    contained in list_df and the calculations described in calcs.
-  #' #   Also, the "3PUR" header will not be included in the data output 
-  #' #    to "gtaptools_shape_example.har", while the sets are being 
+  #' #   Also, the "3PUR" header will not be included in the data output
+  #' #    to "gtaptools_shape_example.har", while the sets are being
   #' #    written to "gtaptools_shape_example_sets.har"
-  #' 
+  #'
   #'
   #' new_binded_db <-
   #'   gtaptools::har_shape(
@@ -213,7 +213,7 @@ har_shape <- function(input_data,
   if (!is.null(new_calculated_vars)) {
     for (v in 1:length(new_calculated_vars)) {
       expr <- new_calculated_vars[[v]][[3]]
-      
+
       dim_adj <- function(x) {
         if (is.array(x) & length(dim(x)) == 1) {
           x <- c(x)
@@ -221,7 +221,7 @@ har_shape <- function(input_data,
         return(x)
       }
       input_har_1_dim_adj <- lapply(input_har, dim_adj)
-      
+
       result_calc <- with(input_har_1_dim_adj, eval(expr))
 
       if (is.character(result_calc)) {
@@ -240,7 +240,6 @@ har_shape <- function(input_data,
 
         sets <- new_calculated_vars[[v]][[2]][[3]]
 
-
         if (is.null(names(dimnames(result_calc)))) {
           result_calc <- as.array(result_calc)
           names(dimnames(result_calc)) <- eval(sets)
@@ -251,8 +250,6 @@ har_shape <- function(input_data,
             names(dimnames(result_calc)) <- eval(sets)
           }
         }
-
-
 
         new_header_name <- new_calculated_vars[[v]][[2]][[2]]
         input_har[[new_header_name]] <- NULL

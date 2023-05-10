@@ -34,7 +34,7 @@ Allows the combination of different databases in data.frame or array format. Gen
 \examples{
 # example code
 
-# - The list_df is composed by list_df, a list of input data 
+# - The list_df is composed by list_df, a list of input data
 #    (path to a .har database(1), data.frame(2), list of arrays(3), array(4)).
 
 path_to_har <- gtaptools::templates("oranig_example.har")
@@ -52,7 +52,7 @@ list_db <- list(
   )
 )
 
-# - calcs defines the calculations that aggregate (1), 
+# - calcs defines the calculations that aggregate (1),
 #    solve a matrix (2) and create a header (3).
 
 calcs <- list(
@@ -62,10 +62,10 @@ calcs <- list(
 )
 
 
-# - new_binded_db is a list object that combines the databases 
+# - new_binded_db is a list object that combines the databases
 #    contained in list_df and the calculations described in calcs.
-#   Also, the "3PUR" header will not be included in the data output 
-#    to "gtaptools_shape_example.har", while the sets are being 
+#   Also, the "3PUR" header will not be included in the data output
+#    to "gtaptools_shape_example.har", while the sets are being
 #    written to "gtaptools_shape_example_sets.har"
 
 

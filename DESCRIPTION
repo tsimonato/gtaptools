@@ -2,7 +2,7 @@ Package: gtaptools
 Type: Package
 Title: A set of tools to improve the productivity of CGE modelers
 Version: 0.1.0
-Authors@R: person("Thiago", "Simonato", email = "tsimonato@purdue.edu",
+Authors@R: person("Thiago", "Simonato", email = "tsimonat@purdue.edu",
                   role = c("aut", "cre"))
 Description: The gtaptools is a package under development that aims to offer a set of functions designed for supporting simulation exercises with CGE (Computable General Equilibrium) models in R language. The primary goal of this package is to facilitate and improve file management, increase the analytical potential of the database, and provide graphical visualizations of simulation results.
 Encoding: UTF-8
@@ -13,7 +13,10 @@ Imports:
     data.table (>= 1.14.8),
     HARr,
     ggplot2,
-    plotly
+    scales,
+    plotly,
+    sf,
+    rnaturalearth
 Remotes:
     github::USDA-ERS/MTED-HARr
 RoxygenNote: 7.2.3

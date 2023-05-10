@@ -96,7 +96,7 @@ plot_bars <- function(input_data,
       stop("`facet` variable is not present in the data.")
     }
     facet_n_row <- ifelse(!is.null(facet_n_row), facet_n_row, 1)
-    facet_scales <- ifelse(!is.null(facet_scales), , "fixed")
+    facet_scales <- ifelse(!is.null(facet_scales), "fixed")
     plot <- plot + ggplot2::facet_wrap(facet,
       scales = facet_scales
     )
