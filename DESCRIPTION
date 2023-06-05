@@ -11,6 +11,7 @@ Depends:
     R (>= 3.1)
 Imports:
     data.table (>= 1.14.8),
+    dplyr,
     HARr,
     ggplot2,
     scales,

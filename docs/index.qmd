@@ -1,6 +1,6 @@
 ---
 title: "gtaptools"
-author: ""
+author: "Thiago Simonato, Uris Baldos, Maros Ivanic"
 date: today
 format:
     bookup-html:
