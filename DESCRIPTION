@@ -18,7 +18,10 @@ Imports:
     plotly,
     sf,
     rnaturalearth,
-    leaflet
+    leaflet,
+    raster,
+    gstat,
+    leafem
 Remotes:
     github::USDA-ERS/MTED-HARr
 RoxygenNote: 7.2.3

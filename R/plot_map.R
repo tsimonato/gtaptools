@@ -48,9 +48,25 @@ plot_map <- function(input_data,
   #'
   #'
   #' @export
+  #' 
+  #' 
+  
+  
+  
+  
 
+  # input_data = gtaptools::template_map # <1>
+  # value_var = "gdp_pc"# <2>
+  # region_var = "name"# <3>
+  # colors = "viridis"# <4>
+  # legend_title = "GDP per capita 2021, PPP</br>(constant 2017 international $)" # <5>
+  
+  
+  
+  
+  
   input_data <- input_data[!is.na(input_data[value_var]), ]
-
+  
   countries_merged <- rnaturalearth::ne_countries(
     scale = "large",
     returnclass = "sf"
@@ -62,6 +78,9 @@ plot_map <- function(input_data,
     countries_merged,
     {{ value_var }} := as.numeric(get(value_var))
   )
+  # 
+  # countries_merged[[value_var]] = as.numeric(countries_merged[[value_var]])
+  # 
   countries_merged <- dplyr::group_by(
     countries_merged,
     dplyr::across(dplyr::all_of(c(
@@ -70,11 +89,11 @@ plot_map <- function(input_data,
     )))
   )
   countries_merged <- dplyr::summarise(countries_merged,
-    geometry = sf::st_union(geometry)
+                                       geometry = sf::st_union(geometry)
   )
   countries_merged <- sf::st_as_sf(countries_merged)
-
-
+  
+  
   # countries_sf <- rnaturalearth::ne_countries(
   #   scale = "large",
   #   returnclass = "sf"
@@ -292,7 +311,7 @@ plot_map <- function(input_data,
         ramp_temp <- colorRampPalette(
           colors = names(colors)[(i - 1):i],
           space = "Lab"
-        )(colors[i] - colors[(i - 1)])
+        )(abs(colors[i] - colors[(i - 1)]))
         ramp <- c(ramp, ramp_temp)
       }
       pal <- leaflet::colorNumeric(

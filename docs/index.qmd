@@ -1,6 +1,6 @@
 ---
 title: "gtaptools"
-author: "Thiago Simonato, Uris Baldos, Maros Ivanic"
+author: "Thiago Simonato, Uris Baldos, Maros Ivanic, Zhan Wang"
 date: today
 format:
     bookup-html:
@@ -504,7 +504,7 @@ gtaptools::plot_map(
   region_var = "name",
   colors = c("red" = 0, "grey" = 15000, "blue" = 70000, "black" = 120000), 
   borders_color = "black", 
-  borders_size = 1,
+  borders_size = 0.5,
   legend_title = "GDP pc 2021\n(con. 2017 int. $)",
   reactive = F
 )
@@ -514,6 +514,150 @@ gtaptools::plot_map(
 ::: {.callout-tip title="Tip"}
 When manually defining color clippings in `colors`, it can be helpful to know better the distribution of `value_var`. For this, we can plot a simple histogram.
 :::
+
+#### - gtaptools::plot_map_grid
+
+The tool `plot_map_grid` plots *gridded* maps as static plots or reactive visualizations. It takes several parameters such as `input_data` An input data frame that contains geographical coordinates information and at least one numeric column. `value_var` the name of the numeric variable to be plotted on the map. `latitude`, `longitude` and `crs` for coordinate reference system to be assigned to latitude and longitude (default = 4326). `interpolate` as a model from the gstat package to interpolate values using a fitted model object. If TRUE, it applies a simple kriging using the formula z~1 (default = FALSE). In addition to aesthetics elements such as `colors`, `borders_color`, `borders_size`, `legend_labels`, `Legend labels`,`legend_title`,` legend_pos`, `fillOpacity` and  `reactive` enable interactivity.
+ Check the [manual](https://github.com/tsimonato/gtaptools/raw/master/manual/gtaptools_0.1.0.pdf) for more details.
+
+::: {.callout-note title="What this tool does:"}
+-   Plot static and reactive gridded maps from geographical coordinate data in [data.frames](https://rstudio.github.io/r-manuals/r-intro/Lists-and-data-frames.html).
+:::
+
+The first step is to create a data.frame that contains coordinates (x, y) and numerical values that should be plotted. For example purposes, let's get them from a `.har` file:
+
+
+```{r}
+#| label: plot_map_grid1
+#| echo: true
+#| eval: true
+#| message: false
+
+path_to_har <- gtaptools::templates("simpleg_example.har")
+
+input_data <- HARr::read_har(path_to_har,
+  useCoefficientsAsNames = T # <1>
+)
+
+values <-
+  as.data.frame.table(input_data$p_qlandg, responseName = "p_qlandg") # <2>
+coords <-
+  as.data.frame.table(input_data$coordinates, responseName = "coordinates")
+
+input_data <- merge(values, # <3>
+  coords,
+  by = "grid"
+)
+
+input_data <- tidyr::pivot_wider(input_data, # <4>
+  names_from = "co",
+  values_from = "coordinates"
+)
+
+input_data <- dplyr::filter(input_data, lat != 1) # <5>
+
+DT::datatable(input_data[1:20, ])
+  
+```
+1.  Reads the `simpleg_example.har` file adopting the coefficients as names of each sublist.
+2.  Converts lists containing numerical values to be plotted and coordinates to data.frames.
+3.  Join the two data.frames using the `grid` column as a reference for the correspondence.
+4.  Expands the data.frame so that each coordinate is represented in a separate column.
+5.  Excludes data from coordinates == 1 that represent data that should not be plotted on grids.
+
+Check out some usage examples using that data:
+
+::: panel-tabset
+## Reactive
+
+```{r}
+#| label: plot_map_grid2
+#| echo: true
+#| eval: true
+#| message: false
+gtaptools::plot_map_grid(
+  input_data = input_data, # <1>
+  latitude = "lat",
+  longitude = "lon",
+  value_var = "p_qlandg",
+  colors = "viridis" # <2>
+)
+```
+
+1.  A data.frame with numeical data containing coordinates (column `lat`, and `lon`) and numerical values to be plotted `p_qlandg`.
+2.  Color palette.
+
+## Static
+
+```{r}
+#| label: plot_map_grid3
+#| echo: true
+#| eval: true
+#| message: false
+gtaptools::plot_map_grid(
+  input_data = input_data,
+  latitude = "lat",
+  longitude = "lon",
+  value_var = "p_qlandg",
+  colors = "viridis",
+  reactive = F 
+)
+```
+1.  A data.frame with numeical data containing coordinates (column `lat`, and `lon`) and numerical values to be plotted `p_qlandg`.
+2.  Color palette.
+3. Disable interactivity.
+:::
+
+We can implement *interpolation* and, just like in `gtaptools::plot_map`, we can define custom pallets.
+
+::: panel-tabset
+## Reactive
+
+```{r}
+#| label: plot_map_grid4
+#| echo: true
+#| eval: true
+#| message: false
+gtaptools::plot_map_grid(
+  input_data = input_data, # <1>
+  latitude = "lat",
+  longitude = "lon",
+  value_var = "p_qlandg",
+  colors = c("red" = -20, "white" = 0, "blue" = 20), # <2>
+  fillOpacity = 1,
+  interpolate = T # <3>
+)
+```
+1.  A data.frame with numerical data containing coordinates (column `lat`, and `lon`) and numerical values to be plotted `p_qlandg`.
+2.  Custom color palette.
+3.  Activates interpolation.
+
+## Static
+
+```{r}
+#| label: plot_map_grid5
+#| echo: true
+#| eval: true
+#| message: false
+gtaptools::plot_map_grid(
+  input_data = input_data, # <1>
+  latitude = "lat",
+  longitude = "lon",
+  value_var = "p_qlandg",
+  colors = c("red" = -20, "white" = 0, "blue" = 20), # <2>
+  borders_size = 1,
+  fillOpacity = 1,
+  interpolate = T, # <3>
+  reactive = F  # <4>
+)
+```
+1.  A data.frame with numeical data containing coordinates (column `lat`, and `lon`) and numerical values to be plotted `p_qlandg`.
+2.  Custom color palette.
+3.  Activates interpolation.
+4.  Disable interactivity.
+
+:::
+
 
 ### Non-spatial data
 
@@ -586,11 +730,9 @@ gtaptools::plot_bars(
 
 # Applying the tools to
 
-## GTAP
-
 ## SIMPLE/SIMPLE-G
 
-## TERM
+## GTAP
 
 # Acknowledgements
 
