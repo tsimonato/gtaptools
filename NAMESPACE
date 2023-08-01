@@ -3,6 +3,7 @@
 export(agg_har)
 export(har_shape)
 export(plot_bars)
+export(plot_dist)
 export(plot_map)
 export(plot_map_grid)
 export(squeeze_sim)

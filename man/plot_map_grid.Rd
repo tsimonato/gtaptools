@@ -10,10 +10,11 @@ plot_map_grid(
   latitude,
   longitude,
   crs = 4326,
+  resolution = NULL,
   interpolate = F,
   colors,
   borders_color = "black",
-  borders_size = 3,
+  borders_size = 1,
   legend_labels = NULL,
   legend_title = NULL,
   legend_pos = NULL,
@@ -32,6 +33,8 @@ plot_map_grid(
 \item{longitude}{The name of the numeric variable that contains the longitude information of each grid.}
 
 \item{crs}{Coordinate reference system to be assigned to *latitude* and *longitude* (default = 4326, the World Geodetic System 1984 - EPSG:4326).}
+
+\item{resolution}{Resolution of the grids. (default = NULL, automatically estimated based on the distance between coordinates.).}
 
 \item{interpolate}{A model from gstat::gstat (gstat package) to interpolate values using a fitted model object. If TRUE it applies a simple kriging using the formula z~1. (default = F).}
 

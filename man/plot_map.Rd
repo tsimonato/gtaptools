@@ -11,6 +11,8 @@ plot_map(
   colors,
   borders_color = ggplot2::alpha("grey", 1/8),
   borders_size = 0.05,
+  background_color = "transparent",
+  facet = NULL,
   legend_labels = NULL,
   legend_title = NULL,
   legend_pos = NULL,
