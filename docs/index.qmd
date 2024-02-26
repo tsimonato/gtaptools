@@ -161,7 +161,7 @@ output_har_r <-
 
 1.  Combine a database in *.har* format on disk in the path `"path_to_har"` with an new header `1MAR[c("COM", "SRC", "IND", "MAR")]` created from data.frame `gtaptools::example_df`.
 2.  No calculation is done to generate/change headers.
-3.  Writes the output to `"gtaptools_shape_example_pf.har"` and returns it the list object `output_har_r` to R environment.
+3.  Writes the output to `"gtaptools_shape_example1.har"` and returns it the list object `output_har_r` to R environment.
 
 ::: callout-caution
 Header names that start with digits, like **1**MAR, must be enclosed in `` to be properly recognized in R.
@@ -175,7 +175,7 @@ have the same name of the header that will be generated (`1MAR` in this
 example).
 :::
 
-Therefore, to generate `1MAR[c("COM", "SRC", "MAR")]` the data.frame used has columns (categorical) that correspond to the sets and a columns (numerical) that correspond to name of the header. Take a look at the first 20 lines of this data.frame below.
+Therefore, to generate `1MAR[c("COM", "SRC", "MAR")]` the data.frame used has columns (categorical) that correspond to the sets and a column (numerical) that correspond to name of the header. Take a look at the first 20 lines of this data.frame below.
 
 ```{r}
 #| label: har_shape2
@@ -223,8 +223,8 @@ output_har_r <-
 
 1.  Reads a *.har* from disk as input.
 2.  Generates the `MARC` and `MACM` header, the aggregation by sum (default) and by mean to COM of `1MAR`.
-    Generates `MULT`, with `"REG"` and `"HOU"` sets, which is the inverse matrix
-    of the `MAKE` header. Creates set header `NSET` consisting of "Comm1" and
+    Generates `MULT`, with `"COM"` and `"IND"` sets, which is the inverse matrix
+    of the `MAKE` header. Creates a new set header `NSET` consisting of "Comm1" and
     "Comm2" elements.
 3.  Deletes the `1LND` header. Saves sets and numeric headers in different
     files.
@@ -236,7 +236,7 @@ Note the syntax adopted in the formulas. It is indispensable to properly use
 `:=` (and not `=` ), `[ ]`, `c("Set1", "Set2", ...)` in case of more than one set, and encapsulating the formula inside `quote( )`.
 :::
 
-The aggregation performed on `MARC["COM"] := 1MAR` is defined by the set indicated for the output header. Since the `1MAR` header is composed of 4 sets (`"COM"`, `"SRC"`, `"IND"`, `"MAR"`) and the output is composed of only 1 (`"COM"`), the tool automatically aggregates the output to `COM.`
+The aggregation performed on `MARC["COM"] := 1MAR` is defined by the set indicated for the output header. Since the `1MAR` header is composed of 4 sets (`"COM"`, `"SRC"`, `"IND"`, `"MAR"`) and the output is composed of only 1 (`"COM"`), the tool automatically aggregates the output to `COM` by sum.
 
 Calculations are being done between arrays in this tool, and R offers a vast range of possibilities for [manipulating arrays](https://rstudio.github.io/r-manuals/r-intro/Arrays-and-matrices.html). It can be applied, for example, *if* statements and intermediate aggregations of sets as commonly adopted in GEMPACK scripts.
 
@@ -277,7 +277,7 @@ output_har <-
 
 To apply conditions on division by zero we can adopt `ifelse`statements. In (2), in the case of division by zero (`apply(3BAS, c("COM"), sum) == 0`) the value `1` is adopted in the denominator, and `apply(3BAS, c("COM"), sum)` otherwise.
 
-It is also possible to adopt cross-references, as in (4). where `3BAS` is added to `5TAX` only if `SH3B > 0.95`.
+It is also possible to adopt cross-references, as in (4), where `3BAS` is added to `5TAX` only if `SH3B > 0.95`.
 
 ::: callout-caution
 Note that the `SH3B` header was created and used as an input in the following formula. It is possible due to the sequential way the calculations are processed in the tool. Therefore, it is necessary to follow this sequence: create the header > use it as input.
@@ -397,7 +397,7 @@ DT::datatable(as.data.frame.table(output_har$POL))
 
 #### - gtaptools::plot_bars
 
-`plot_bars` plots bar graphs using ggplot2 and plotly R packages. This tool can be used for creating static and reactive bar charts. `input_data` is the data frame containing the data that will be plotted, where each column is a variable, and each row is an observation. `x` and `y` are the names of the variables to be plotted on the x and y axes, respectively. `x_label` and `y_label` are the labels for the x and y axes, respectively. `fill` is the variable to be used for stacking the bars. `facet` is the variable to be used for faceting the graph. `palette` is the name or number of the color palette to be used. `orientation_bars` is the orientation of the bars to be plotted, which can be either "horizontal" or "vertical". `rotate_x_labels` is the angle in degrees to rotate the x-axis labels. `legend_title` is the title to be used for the legend, and `legend_pos` is the position to be used for the legend. `gtap_theme` is the template theme to be used.
+`plot_bars` plots bar graphs using *ggplot2* and *plotly* R packages. This tool can be used for creating static and reactive bar charts. `input_data` is the data frame or array containing the data that will be plotted. `x` and `y` are the names of the variables to be plotted on the x and y axes, respectively. `x_label` and `y_label` are the labels for the x and y axes, respectively. `fill` is the variable to be used for stacking the bars. `facet` is the variable to be used for faceting the graph. `palette` is the name or number of the color palette to be used. `orientation_bars` is the orientation of the bars to be plotted, which can be either "horizontal" or "vertical". `rotate_x_labels` is the angle in degrees to rotate the x-axis labels. `legend_title` is the title to be used for the legend, and `legend_pos` is the position to be used for the legend. `gtap_theme` is the template theme to be used.
 
 ::: {.callout-note title="What this tool does:"}
 -   Plot static and reactive bar graphs from data in [arrays](https://rstudio.github.io/r-manuals/r-intro/Arrays-and-matrices.html) or [data.frames](https://rstudio.github.io/r-manuals/r-intro/Lists-and-data-frames.html).

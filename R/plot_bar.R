@@ -4,6 +4,7 @@ plot_bars <- function(input_data,
                       y,
                       y_label = NULL,
                       fill = NULL,
+                      position = "stack",
                       facet = NULL,
                       facet_n_row = NULL,
                       facet_scales = NULL,
@@ -25,6 +26,7 @@ plot_bars <- function(input_data,
   #' @param y The name of the variable to be plotted on the y-axis.
   #' @param y_label the label to be used for the x-axis (default is y).
   #' @param fill the name of the variable to be used for stacking the bars, if any (default is NULL)
+  #' @param position "stack" to keep the fill categories in the same bar or "dodge" to plot in different bars (default = "stack").
   #' @param facet the name of the variable to be used for faceting the graph, if any (default is NULL)
   #' @param palette the name of the color palette to be used. Can be specified by name or number from 1 to about 15 (default is 1).
   #' @param orientation_bars the orientation of the bars to be plotted, "h" to horizontal or "v" to vertical (default is "v").
@@ -61,23 +63,24 @@ plot_bars <- function(input_data,
     }
     plot <- ggplot2::ggplot(
       input_data,
-      ggplot2::aes_string(
-        x = x,
-        y = y,
-        fill = fill
+      ggplot2::aes(
+        x = .data[[x]],
+        y = .data[[y]],
+        fill = .data[[fill]]
       )
     ) +
-      ggplot2::geom_col(position = "stack")
+      ggplot2::geom_col(position = position)
   } else {
     plot <- ggplot2::ggplot(
       input_data,
       ggplot2::aes(
-        x = {{x}},
-        y = {{y}}
+        x = .data[[x]],
+        y = .data[[y]]
       )
     ) +
       ggplot2::geom_bar(stat = "identity")
   }
+  
 
   # orientation_bars arg
   if (!is.null(orientation_bars)) {
@@ -96,8 +99,9 @@ plot_bars <- function(input_data,
       stop("`facet` variable is not present in the data.")
     }
     facet_n_row <- ifelse(!is.null(facet_n_row), facet_n_row, 1)
-    facet_scales <- ifelse(!is.null(facet_scales), , "fixed")
+    facet_scales <- ifelse(!is.null(facet_scales), facet_scales, "fixed")
     plot <- plot + ggplot2::facet_wrap(facet,
+      nrow = facet_n_row,
       scales = facet_scales
     )
   }

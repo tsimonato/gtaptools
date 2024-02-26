@@ -11,6 +11,7 @@ plot_bars(
   y,
   y_label = NULL,
   fill = NULL,
+  position = "stack",
   facet = NULL,
   facet_n_row = NULL,
   facet_scales = NULL,
@@ -35,6 +36,8 @@ plot_bars(
 \item{y_label}{the label to be used for the x-axis (default is y).}
 
 \item{fill}{the name of the variable to be used for stacking the bars, if any (default is NULL)}
+
+\item{position}{"stack" to keep the fill categories in the same bar or "dodge" to plot in different bars (default = "stack").}
 
 \item{facet}{the name of the variable to be used for faceting the graph, if any (default is NULL)}
 
