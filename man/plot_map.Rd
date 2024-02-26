@@ -6,21 +6,41 @@
 \usage{
 plot_map(
   input_data,
+<<<<<<< HEAD
   var_value,
   colors,
   borders_color = ggplot2::alpha("grey", 1/8),
   borders_size = 0.05,
+=======
+  value_var,
+  region_var = "name",
+  colors,
+  borders_color = ggplot2::alpha("grey", 1/8),
+  borders_size = 0.05,
+  background_color = "transparent",
+  facet = NULL,
+>>>>>>> afbd993d7e063e2852d62a0ca4eeed8852af5aca
   legend_labels = NULL,
   legend_title = NULL,
   legend_pos = NULL,
   reactive = T,
+<<<<<<< HEAD
+=======
+  fillOpacity = 0.7,
+>>>>>>> afbd993d7e063e2852d62a0ca4eeed8852af5aca
   gtap_theme = "A"
 )
 }
 \arguments{
 \item{input_data}{An input data.frame has at least one numeric column and one region id categorical column. The region id column name must have one of the following (and have content consistent with these formats): iso_a2, iso_a3 and iso_n3.}
 
+<<<<<<< HEAD
 \item{var_value}{The name of the numeric variable to be plotted on the map.}
+=======
+\item{value_var}{The name of the numeric variable to be plotted on the map.}
+
+\item{region_var}{Variable that contains region labels that will be used to aggregate the sf if necessary. (default = "name").}
+>>>>>>> afbd993d7e063e2852d62a0ca4eeed8852af5aca
 
 \item{colors}{The name of the color palette to be adopted (see a list in the section Notes below) or the custom color break vector. See the examples section.}
 
@@ -32,11 +52,21 @@ plot_map(
 
 \item{legend_title}{Legend title.}
 
+<<<<<<< HEAD
 \item{legend_pos}{The position of legends ("none", "left", "right", "bottom", "top", or two-element numeric vector).}
 
 \item{reactive}{Plot reactive (default = T).}
 
 \item{gtap_theme}{The gtap template theme. Can be specified from 1 to about 5 (default is 1).}
+=======
+\item{legend_pos}{The position of legends. For reactive = F:"none", "left", "right", "bottom", "top", or two-element numeric vector. For reactive = T: "topright", "bottomright", "bottomleft" and "topleft".}
+
+\item{reactive}{Plot reactive (default = T).}
+
+\item{fillOpacity}{Color fill layer transparency. Must be between [0, 1] (default = 0.7). Only applied when reactive = T.}
+
+\item{gtap_theme}{The gtap template theme. Can be specified from 1 to about 5 (default is 1). Only applied when reactive = F.}
+>>>>>>> afbd993d7e063e2852d62a0ca4eeed8852af5aca
 }
 \description{
 Plot static and reactive spatial viz.
@@ -44,7 +74,11 @@ Plot static and reactive spatial viz.
 \note{
 Palette options include:
 Viridis palletes:
+<<<<<<< HEAD
   "magma" (or "A"), "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D"), "cividis" (or "E"), "rocket" (or "F"), "mako" (or "G"), "turbo" (or "H").
+=======
+  "magma", "inferno", "plasma", "viridis", "cividis", "rocket", "mako", "turbo".
+>>>>>>> afbd993d7e063e2852d62a0ca4eeed8852af5aca
 Color Brewer Sequential:
   "Blues", "BuGn", "BuPu", "GnBu", "Greens", "Greys", "Oranges", "OrRd", "PuBu", "PuBuGn", "PuRd", "Purples", "RdPu", "Reds", "YlGn", "YlGnBu", "YlOrBr", "YlOrRd".
 Color Brewer Diverging:

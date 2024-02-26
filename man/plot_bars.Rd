@@ -51,7 +51,7 @@ plot_bars(
 
 \item{legend_pos}{the position to be used for the legend ("bottom", "left" or "right"), default is "bottom".}
 
-\item{reactive}{Plot reactive (default = T).}
+\item{reactive}{Plot reactive (default = TRUE).}
 
 \item{gtap_theme}{the gtap template theme. Can be specified from 1 to about 5 (default is 1).}
 }

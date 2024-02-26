@@ -33,7 +33,7 @@ plot_bars <- function(input_data,
   #' @param rotate_x_labels the angle in degrees to rotate the x-axis labels (default is 90)
   #' @param legend_title the title to be used for the legend (default is fill).
   #' @param legend_pos the position to be used for the legend ("bottom", "left" or "right"), default is "bottom".
-  #' @param reactive Plot reactive (default = T).
+  #' @param reactive Plot reactive (default = TRUE).
   #' @param gtap_theme the gtap template theme. Can be specified from 1 to about 5 (default is 1).
   #'
   #' @import ggplot2
@@ -161,8 +161,6 @@ plot_bars <- function(input_data,
       plot <- plotly::ggplotly(plot)
     }
   }
-
-  plot
 
   return(plot)
 }

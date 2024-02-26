@@ -11,12 +11,21 @@ Depends:
     R (>= 3.1)
 Imports:
     data.table (>= 1.14.8),
+    dplyr,
     HARr,
     ggplot2,
     scales,
     plotly,
     sf,
+<<<<<<< HEAD
     rnaturalearth
+=======
+    rnaturalearth,
+    leaflet,
+    raster,
+    gstat,
+    leafem
+>>>>>>> afbd993d7e063e2852d62a0ca4eeed8852af5aca
 Remotes:
     github::USDA-ERS/MTED-HARr
 RoxygenNote: 7.2.3
