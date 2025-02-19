@@ -3,6 +3,7 @@
 .RData
 .Ruserdata
 *.Rproj
+*.qmd
 /data/test/**/*
 setup.R
 anotations.txt
