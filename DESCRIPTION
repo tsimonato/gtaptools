@@ -8,7 +8,7 @@ Description: The gtaptools is a package under development that aims to offer a s
 Encoding: UTF-8
 LazyData: true
 Depends: 
-    R (>= 3.1)
+    R (>= 3.2)
 Imports:
     data.table (>= 1.14.8),
     dplyr,
